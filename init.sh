@@ -3,7 +3,7 @@
 set -e
 
 echo "Create go-ipfs deployment"
-kubectl create -f https://github.com/AIDXNZ/KubeIPFS
+kubectl create -f ./
 
 sleep 2
 
