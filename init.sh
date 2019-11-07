@@ -2,12 +2,6 @@
 
 set -e
 
-echo "Create go-ipfs deployment"
-kubectl create -f ./
-
-sleep 2
-
-echo
 echo "Waiting for all containers to be running"
 
 while true; do
