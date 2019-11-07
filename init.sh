@@ -3,7 +3,7 @@
 set -e
 
 echo "Create go-ipfs deployment"
-kubectl create -f https://github.com/AIDXNZ/KubeIPFS/blob/master/ipfs-cluster-deployment.yaml
+kubectl create -f ./KubeIPFS/ipfs-cluster-deployment.yaml 
 
 sleep 2
 
