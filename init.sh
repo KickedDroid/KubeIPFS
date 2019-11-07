@@ -23,7 +23,7 @@ sleep 5
 
 echo
 echo "Adding peers to cluster"
-pods=`kubectl get pods -l 'app=ipfs-cluster,role=peer' -o jsonpath='{.items[*].metadata.name}' | xargs -n1`
+pods=`kubectl get pods -l 'app=ipfs-cluster' -o jsonpath='{.items[*].metadata.name}' | xargs -n1`
 bootstrapper=`kubectl get pods -l 'app=ipfs-cluster,role=bootstrapper' -o jsonpath='{.items[*].metadata.name}'`
 
 for p in $pods; do
