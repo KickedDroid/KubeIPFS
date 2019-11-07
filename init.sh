@@ -3,7 +3,7 @@
 set -e
 
 echo "Create go-ipfs deployment"
-kubectl create -f ./ipfs-cluster-deployment.yml
+kubectl create -f ipfs-cluster-deployment.yml
 
 sleep 2
 
