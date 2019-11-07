@@ -1,0 +1,69 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: ipfs-cluster-bootstrapper
+  labels:
+    name: go-ipfs
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: ipfs-cluster
+        role: bootstrapper
+    spec:
+      containers:
+      - name: ipfs-cluster-bootstrapper
+        image: "docker.io/ipfs/ipfs-cluster-test:latest"
+        command: ["/usr/local/bin/start-daemons.sh"]
+        ports:
+        - containerPort: 4001
+          name: "swarm"
+          protocol: "TCP"
+        - containerPort: 5001
+          name: "api"
+          protocol: "TCP"
+        - containerPort: 9094
+          name: "clusterapi"
+          protocol: "TCP"
+        - containerPort: 9095
+          name: "clusterproxy"
+          protocol: "TCP"
+        - containerPort: 9096
+          name: "cluster"
+          protocol: "TCP"
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: ipfs-cluster
+  labels:
+    name: ipfs-cluster
+spec:
+  replicas: 5
+  template:
+    metadata:
+      labels:
+        app: ipfs-cluster
+        role: peer
+    spec:
+      containers:
+      - name: ipfs-cluster
+        image: "docker.io/ipfs/ipfs-cluster-test:latest"
+        command: ["/usr/local/bin/start-daemons.sh"]
+        ports:
+        - containerPort: 4001
+          name: "swarm"
+          protocol: "TCP"
+        - containerPort: 5001
+          name: "api"
+          protocol: "TCP"
+        - containerPort: 9094
+          name: "clusterapi"
+          protocol: "TCP"
+        - containerPort: 9095
+          name: "clusterproxy"
+          protocol: "TCP"
+        - containerPort: 9096
+          name: "cluster"
+          protocol: "TCP"
