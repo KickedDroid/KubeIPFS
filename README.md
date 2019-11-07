@@ -27,15 +27,15 @@ Kube IPFS is a deployment of go-ipfs to a kubernetes cluster and accessed via a 
 
 ## Create a Kubernetes Cluster
 
-minikube start
+`minikube start`
 
-eval $(minikube docker-env).
+`eval $(minikube docker-env).`
 
-minikube dashboard
+`minikube dashboard`
 
-kubectl run example-node —image=docker.io/ipfs/go-ipf
+`kubectl run example-node —image=docker.io/ipfs/go-ipf`
 
-kube expose deployment example-node —type=NodePort —port=8080 
+`kube expose deployment example-node —type=NodePort —port=8080` 
 
 ipfs pin ls
 QmQ5vhrL7uv6tuoN9KeVBwd4PwfQkXdVVmDLUZuTNxqgvm indirect
