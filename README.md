@@ -74,8 +74,4 @@ StorageMax: 10000000000
 RepoPath: /data/ipfs
 Version: fs-repo@7
 
-![](Screen_Shot_2019-11-06_at_7-4bec7ca8-2737-4b71-9b75-c0152bd553ee.40.41_PM.png)
-
-![](Screen_Shot_2019-11-06_at_7-662e64eb-8984-4343-8ef4-7c27a8797912.40.32_PM.png)
-
-![](Screen_Shot_2019-11-06_at_7-b456449c-4837-4cd1-ac00-e9d8091f2dce.35.49_PM.png)
+kubectl run ipfs-cluster --image=docker.io/ipfs/ipfs-cluster --port=9096 --port=9094 --port=9095
