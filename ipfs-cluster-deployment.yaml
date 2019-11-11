@@ -3,9 +3,12 @@ kind: Deployment
 metadata:
   name: ipfs-cluster-bootstrapper
   labels:
-    name: go-ipfs
+    name: ipfs-cluster-bootstrapper
 spec:
   replicas: 1
+  selector:
+    matchLabels:
+      app: ipfs-cluster
   template:
     metadata:
       labels:
@@ -15,7 +18,6 @@ spec:
       containers:
       - name: ipfs-cluster-bootstrapper
         image: "docker.io/ipfs/ipfs-cluster-test:latest"
-        command: ["/usr/local/bin/start-daemons.sh"]
         ports:
         - containerPort: 4001
           name: "swarm"
@@ -41,9 +43,9 @@ metadata:
     name: ipfs-cluster
 spec:
   replicas: 5
-  selector: 
-  matchLabels: 
-  app: ipfs-cluster
+  selector:
+    matchLabels: 
+      app: ipfs-cluster
   template:
     metadata:
       labels:
@@ -53,7 +55,6 @@ spec:
       containers:
       - name: ipfs-cluster
         image: "docker.io/ipfs/ipfs-cluster-test:latest"
-        command: ["/usr/local/bin/start-daemons.sh"]
         ports:
         - containerPort: 4001
           name: "swarm"
