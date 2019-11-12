@@ -71,3 +71,58 @@ spec:
         - containerPort: 9096
           name: "cluster"
           protocol: "TCP"
+      - name: go-ipfs
+        image: "docker.io/ipfs/go-ipfs"
+        ports:
+            - name: swarm
+              protocol: TCP
+              containerPort: 4001
+            - name: swarm-udp
+              protocol: UDP
+              containerPort: 4002
+            - name: api
+              protocol: TCP
+              containerPort: 5001
+            - name: ws
+              protocol: TCP
+              containerPort: 8081
+            - name: http
+              protocol: TCP
+              containerPort: 8080
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: go-ipfs
+  labels:
+    name: go-ipfs
+spec:
+  replicas: 5
+  selector:
+    matchLabels: 
+      app: go-ipfs
+  template:
+    metadata:
+      labels:
+        app: go-ipfs
+        role: peer
+    spec:
+      containers:
+      - name: go-ipfs
+        image: "docker.io/ipfs/go-ipfs"
+        ports:
+            - name: swarm
+              protocol: TCP
+              containerPort: 4001
+            - name: swarm-udp
+              protocol: UDP
+              containerPort: 4002
+            - name: api
+              protocol: TCP
+              containerPort: 5001
+            - name: ws
+              protocol: TCP
+              containerPort: 8081
+            - name: http
+              protocol: TCP
+              containerPort: 8080
