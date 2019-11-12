@@ -37,41 +37,10 @@ Kube IPFS is a deployment of go-ipfs to a kubernetes cluster and accessed via a 
 
 `kube expose deployment example-node —type=NodePort —port=8080` 
 
-ipfs pin ls
-QmQ5vhrL7uv6tuoN9KeVBwd4PwfQkXdVVmDLUZuTNxqgvm indirect
-QmXgqKTbzdh83pQtKFb19SpMCpDDcKR2ujqk3pKph9aCNF indirect
-QmY5heUM5qgRubMDD1og9fhCPA6QdkMp3QCwd4s7gJsyE7 indirect
-QmYCvbfNbCwFR45HiNP45rwJgvatpiW38D961L5qAhUM5Y indirect
-QmejvEPop4D7YUadeGqYWmZxHhLc4JBUCzJJHWMzdcMe2y indirect
-QmPZ9gcCEpqKTo6aq61g2nXGUhM4iCL3ewB6LDXZCtioEB indirect
-QmS4ustL54uo8FzR9455qaxZwuMiUhyvMcX9Ba8nUH4uVv recursive
-QmUNLLsPACCz1vLxQVkXqqLX5R1X345qqfHbsf67hvA3Nn recursive
-QmZTR5bcpQD7cFgTorqxZDYaew1Wqgfbd2ud9QqGPAkK2V indirect
+# Kube IPFS Cluster
 
-ipfs pin ls
-QmXgqKTbzdh83pQtKFb19SpMCpDDcKR2ujqk3pKph9aCNF indirect
-QmZTR5bcpQD7cFgTorqxZDYaew1Wqgfbd2ud9QqGPAkK2V indirect
-QmejvEPop4D7YUadeGqYWmZxHhLc4JBUCzJJHWMzdcMe2y indirect
-QmPZ9gcCEpqKTo6aq61g2nXGUhM4iCL3ewB6LDXZCtioEB indirect
-QmS4ustL54uo8FzR9455qaxZwuMiUhyvMcX9Ba8nUH4uVv recursive
-QmUNLLsPACCz1vLxQVkXqqLX5R1X345qqfHbsf67hvA3Nn recursive
-QmYCvbfNbCwFR45HiNP45rwJgvatpiW38D961L5qAhUM5Y indirect
-QmP8jTG1m9GSDJLCbeWhVSVgEzCPPwXRdCRuJtQ5Tz9Kc9 recursive
-QmQ5vhrL7uv6tuoN9KeVBwd4PwfQkXdVVmDLUZuTNxqgvm indirect
-QmY5heUM5qgRubMDD1og9fhCPA6QdkMp3QCwd4s7gJsyE7 indirect
+## Create Deployment
 
-ipfs repo stat
-NumObjects: 31
-RepoSize: 196286
-StorageMax: 10000000000
-RepoPath: /data/ipfs
-Version: fs-repo@7
+``kubectl apply -f https://github.com/AIDXNZ/KubeIPFS/blob/master/ipfs-cluster-deployment.yaml``
 
-ipfs repo stat
-NumObjects: 28
-RepoSize: 171643
-StorageMax: 10000000000
-RepoPath: /data/ipfs
-Version: fs-repo@7
 
-kubectl run ipfs-cluster --image=docker.io/ipfs/ipfs-cluster --port=9096 --port=9094 --port=9095
