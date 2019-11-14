@@ -1,4 +1,4 @@
-# Kubernetes IPFS Cluster
+# Kube IPFS
 
 ## Create a Kubernetes Cluster
 
@@ -8,11 +8,6 @@
 
 `minikube dashboard`
 
-`kubectl run example-node —image=docker.io/ipfs/go-ipf`
-
-`kube expose deployment example-node —type=NodePort —port=8080` 
-
-# Kube IPFS Cluster
 
 ## Create Deployment
 
