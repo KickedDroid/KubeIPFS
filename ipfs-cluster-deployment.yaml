@@ -1,43 +1,6 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: ipfs-cluster-bootstrapper
-  labels:
-    name: ipfs-cluster-bootstrapper
-spec:
-  replicas: 1
-  selector:
-    matchLabels:
-      app: ipfs-cluster
-  template:
-    metadata:
-      labels:
-        app: ipfs-cluster
-        role: bootstrapper
-    spec:
-      containers:
-      - name: ipfs-cluster-bootstrapper
-        image: "docker.io/ipfs/ipfs-cluster-test:latest"
-        ports:
-        - containerPort: 4001
-          name: "swarm"
-          protocol: "TCP"
-        - containerPort: 5001
-          name: "api"
-          protocol: "TCP"
-        - containerPort: 9094
-          name: "clusterapi"
-          protocol: "TCP"
-        - containerPort: 9095
-          name: "clusterproxy"
-          protocol: "TCP"
-        - containerPort: 9096
-          name: "cluster"
-          protocol: "TCP"
----
-apiVersion: apps/v1
-kind: Deployment
-metadata:
   name: ipfs-cluster
   labels:
     name: ipfs-cluster
@@ -54,7 +17,10 @@ spec:
     spec:
       containers:
       - name: ipfs-cluster
-        image: "docker.io/ipfs/ipfs-cluster-test:latest"
+        image: "docker.io/ipfs/ipfs-cluster:latest"
+        env: 
+        - name: CLUSTER_SECRET
+          value: "put your secret here"
         ports:
         - containerPort: 4001
           name: "swarm"
@@ -72,7 +38,7 @@ spec:
           name: "cluster"
           protocol: "TCP"
       - name: go-ipfs
-        image: "docker.io/ipfs/go-ipfs"
+        image: "ipfs/go-ipfs"
         ports:
             - name: swarm
               protocol: TCP
