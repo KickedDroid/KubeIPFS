@@ -1,0 +1,172 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: temporal
+  labels:
+    name: temporal
+spec:
+  replicas: 1
+  selector:
+    matchLabels: 
+      app: temporal
+  template:
+    metadata:
+      labels:
+        app: temporal
+        role: node
+    spec:
+      containers:
+
+
+      - name: temporal
+        image: "docker.io/rtradetech/temporal:latest"
+        ports: 
+          - name: ipfs
+            protocol: TCP
+            containerPort: 5001
+          - name: "api"
+            protocol: "TCP"
+            containerPort: 9094 
+          - name: db
+            containerPort: 5432
+          - name: rabbitmq 
+            containerPort: 5672
+
+
+      - name: krab
+        image: "docker.io/rtradetech/temporal:latest"
+        command: ["krab"]
+        ports: 
+          - name: ipfs
+            protocol: TCP
+            containerPort: 5001
+          - name: "api"
+            protocol: "TCP"
+            containerPort: 9094 
+          - name: db
+            containerPort: 5432
+          - name: rabbitmq 
+            containerPort: 5672
+
+
+      - name: queue-email-send
+        image: "docker.io/rtradetech/temporal:latest"
+        command: ["queue email-send"]
+        ports: 
+          - name: ipfs
+            protocol: TCP
+            containerPort: 5001
+          - name: "api"
+            protocol: "TCP"
+            containerPort: 9094 
+          - name: db
+            containerPort: 5432
+          - name: rabbitmq 
+            containerPort: 5672
+
+
+      - name: queue-ipfs-cluster
+        image: "docker.io/rtradetech/temporal:latest"
+        command: ["queue ipfs cluster"]
+        ports: 
+          - name: ipfs
+            protocol: TCP
+            containerPort: 5001
+          - name: "api"
+            protocol: "TCP"
+            containerPort: 9094 
+          - name: db
+            containerPort: 5432
+          - name: rabbitmq 
+            containerPort: 5672
+
+
+      - name: queue-ipfs-ipns-entry
+        image: "docker.io/rtradetech/temporal:latest"
+        command: ["queue ipfs ipns-entry"]
+        ports: 
+          - name: ipfs
+            protocol: TCP
+            containerPort: 5001
+          - name: "api"
+            protocol: "TCP"
+            containerPort: 9094 
+          - name: db
+            containerPort: 5432
+          - name: rabbitmq 
+            containerPort: 5672
+
+
+      - name: queue-ipfs-key-creation
+        image: "docker.io/rtradetech/temporal:latest"
+        command: ["queue ipfs key-creation"]
+        ports: 
+          - name: ipfs
+            protocol: TCP
+            containerPort: 5001
+          - name: "api"
+            protocol: "TCP"
+            containerPort: 9094 
+          - name: db
+            containerPort: 5432
+          - name: rabbitmq 
+            containerPort: 5672
+
+
+      - name: queue-ipfs-pin
+        image: "docker.io/rtradetech/temporal:latest"
+        command: ["queue ipfs pin"]
+        ports: 
+          - name: ipfs
+            protocol: TCP
+            containerPort: 5001
+          - name: "api"
+            protocol: "TCP"
+            containerPort: 9094 
+          - name: db
+            containerPort: 5432
+          - name: rabbitmq 
+            containerPort: 5672
+
+
+      - name: go-ipfs
+        image: "ipfs/go-ipfs"
+        ports:
+            - name: swarm
+              protocol: TCP
+              containerPort: 4001
+            - name: swarm-udp
+              protocol: UDP
+              containerPort: 4002
+            - name: api
+              protocol: TCP
+              containerPort: 5001
+            - name: ws
+              protocol: TCP
+              containerPort: 8081
+            - name: http
+              protocol: TCP
+              containerPort: 8080
+
+              
+      - name: ipfs-cluster
+        image: "docker.io/ipfs/ipfs-cluster:latest"
+        env: 
+        - name: CLUSTER_SECRET
+          value: "9d171041f5ffd244316307e2141a6890dbf5fb4c00dfb38fd61721b88a4adf87"
+        ports:
+        - containerPort: 4001
+          name: "swarm"
+          protocol: "TCP"
+        - containerPort: 5001
+          name: "api"
+          protocol: "TCP"
+        - containerPort: 9094
+          name: "clusterapi"
+          protocol: "TCP"
+        - containerPort: 9095
+          name: "clusterproxy"
+          protocol: "TCP"
+        - containerPort: 9096
+          name: "cluster"
+          protocol: "TCP"
