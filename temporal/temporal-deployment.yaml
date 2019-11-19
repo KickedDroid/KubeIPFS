@@ -35,7 +35,7 @@ spec:
 
       - name: krab
         image: "docker.io/rtradetech/temporal:latest"
-        command: ["krab"]
+        args: ["krab"]
         ports: 
           - name: ipfs
             protocol: TCP
@@ -51,7 +51,7 @@ spec:
 
       - name: queue-email-send
         image: "docker.io/rtradetech/temporal:latest"
-        command: ["queue email-send"]
+        args: ["queue email-send"]
         ports: 
           - name: ipfs
             protocol: TCP
@@ -67,7 +67,7 @@ spec:
 
       - name: queue-ipfs-cluster
         image: "docker.io/rtradetech/temporal:latest"
-        command: ["queue ipfs cluster"]
+        args: ["queue ipfs cluster"]
         ports: 
           - name: ipfs
             protocol: TCP
@@ -83,7 +83,7 @@ spec:
 
       - name: queue-ipfs-ipns-entry
         image: "docker.io/rtradetech/temporal:latest"
-        command: ["queue ipfs ipns-entry"]
+        args: ["queue ipfs ipns-entry"]
         ports: 
           - name: ipfs
             protocol: TCP
@@ -99,7 +99,7 @@ spec:
 
       - name: queue-ipfs-key-creation
         image: "docker.io/rtradetech/temporal:latest"
-        command: ["queue ipfs key-creation"]
+        args: ["queue ipfs key-creation"]
         ports: 
           - name: ipfs
             protocol: TCP
@@ -115,7 +115,7 @@ spec:
 
       - name: queue-ipfs-pin
         image: "docker.io/rtradetech/temporal:latest"
-        command: ["queue ipfs pin"]
+        args: ["queue ipfs pin"]
         ports: 
           - name: ipfs
             protocol: TCP
