@@ -11,6 +11,6 @@
 
 ## Create Deployment
 
-``kubectl apply -f https://github.com/AIDXNZ/KubeIPFS/blob/master/ipfs-cluster-deployment.yaml``
+``kubectl apply -f https://raw.githubusercontent.com/AIDXNZ/KubeIPFS/master/ipfs-cluster-deployment.yaml``
 
 
