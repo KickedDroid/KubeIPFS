@@ -55,3 +55,4 @@ spec:
             - name: http
               protocol: TCP
               containerPort: 8080
+              

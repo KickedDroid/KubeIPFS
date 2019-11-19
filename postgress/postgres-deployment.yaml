@@ -20,7 +20,7 @@ spec:
           - configMapRef:
               name: postgres-config
         ports:
-        - containerPort: 5432
+        - containerPort: 5433
           name: postgredb
         volumeMounts:
         - name: postgredb

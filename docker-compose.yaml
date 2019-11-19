@@ -2,48 +2,48 @@ version: '3'
 
 services:
   temporal:
-    image: rtradetech/temporal:${TEMPORAL}
+    image: rtradetech/temporal:latest
     network_mode: "host" # expose all
     volumes:
       - ${BASE}/data/temporal:/data/temporal
 
   krab:
-    image: rtradetech/temporal:${TEMPORAL}
+    image: rtradetech/temporal:latest
     network_mode: "host" # expose all
     command: krab
     volumes:
       - ${BASE}/data/temporal:/data/temporal
 
   queue-email-send:
-    image: rtradetech/temporal:${TEMPORAL}
+    image: rtradetech/temporal:latest
     network_mode: "host" # expose all
     command: queue email-send
     volumes:
       - ${BASE}/data/temporal:/data/temporal
 
   queue-ipfs-cluster:
-    image: rtradetech/temporal:${TEMPORAL}
+    image: rtradetech/temporal:latest
     network_mode: "host" # expose all
     command: queue ipfs cluster
     volumes:
       - ${BASE}/data/temporal:/data/temporal
 
   queue-ipfs-ipns-entry:
-    image: rtradetech/temporal:${TEMPORAL}
+    image: rtradetech/temporal:latest
     network_mode: "host" # expose all
     command: queue ipfs ipns-entry
     volumes:
       - ${BASE}/data/temporal:/data/temporal
 
   queue-ipfs-key-creation:
-    image: rtradetech/temporal:${TEMPORAL}
+    image: rtradetech/temporal:latest
     network_mode: "host" # expose all
     command: queue ipfs key-creation
     volumes:
       - ${BASE}/data/temporal:/data/temporal
 
   queue-ipfs-pin:
-    image: rtradetech/temporal:${TEMPORAL}
+    image: rtradetech/temporal:latest
     network_mode: "host" # expose all
     command: queue ipfs pin
     volumes:

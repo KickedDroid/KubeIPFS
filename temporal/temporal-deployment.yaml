@@ -28,7 +28,7 @@ spec:
             protocol: "TCP"
             containerPort: 9094 
           - name: db
-            containerPort: 5432
+            containerPort: 5433
           - name: rabbitmq 
             containerPort: 5672
 
@@ -44,7 +44,7 @@ spec:
             protocol: "TCP"
             containerPort: 9094 
           - name: db
-            containerPort: 5432
+            containerPort: 5433
           - name: rabbitmq 
             containerPort: 5672
 
@@ -60,7 +60,7 @@ spec:
             protocol: "TCP"
             containerPort: 9094 
           - name: db
-            containerPort: 5432
+            containerPort: 5433
           - name: rabbitmq 
             containerPort: 5672
 
@@ -76,7 +76,7 @@ spec:
             protocol: "TCP"
             containerPort: 9094 
           - name: db
-            containerPort: 5432
+            containerPort: 5433
           - name: rabbitmq 
             containerPort: 5672
 
@@ -92,7 +92,7 @@ spec:
             protocol: "TCP"
             containerPort: 9094 
           - name: db
-            containerPort: 5432
+            containerPort: 5433
           - name: rabbitmq 
             containerPort: 5672
 
@@ -108,7 +108,7 @@ spec:
             protocol: "TCP"
             containerPort: 9094 
           - name: db
-            containerPort: 5432
+            containerPort: 5433
           - name: rabbitmq 
             containerPort: 5672
 
@@ -124,7 +124,7 @@ spec:
             protocol: "TCP"
             containerPort: 9094 
           - name: db
-            containerPort: 5432
+            containerPort: 5433
           - name: rabbitmq 
             containerPort: 5672
 
@@ -148,7 +148,7 @@ spec:
               protocol: TCP
               containerPort: 8080
 
-              
+
       - name: ipfs-cluster
         image: "docker.io/ipfs/ipfs-cluster:latest"
         env: 
