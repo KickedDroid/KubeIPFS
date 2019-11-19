@@ -1,0 +1,162 @@
+{
+	"api": {
+		"admin_user": "",
+		"connection": {
+			"certificates": {
+				"cert_path": "./testenv/certs/api.cert",
+				"key_path": "./testenv/certs/api.key"
+			},
+			"listen_address": "127.0.0.1"
+		},
+		"prometheus": {
+			"ip": "127.0.0.1",
+			"port": "6768"
+		},
+		"jwt": {
+			"realm": "temporal-realm",
+			"key": "suchStrongKeyMuchProtectVerySafe"
+		},
+		"size_limit_in_giga_bytes": "2"
+	},	
+	"api_keys": {
+		"chain_rider": ""
+	},
+	"aws": {
+		"key_id": "",
+		"secret": ""
+	},
+	"database": {
+		"name": "temporal",
+		"url": "127.0.0.1",
+		"port": "5433",
+		"username": "postgres",
+		"password": "password123"
+	},
+	"services": {
+		"rtns": {
+			"multi_addresses": ["/ip4/0.0.0.0/tcp/3999"],
+			"key_name": "",
+			"datastore_path": "test"
+		},
+		"lens": {
+			"url": "127.0.0.1:9998",
+			"tls": {
+				"cert_path": "",
+				"key_file": ""
+			},
+			"auth_key": "blahblahblah",
+			"options": {
+				"engine": {
+					"store_path": "./tmp",
+					"queue": {
+						"rate": 3,
+						"batch": 1
+					}
+				}
+			}
+		},
+		"nexus": {
+			"host": "",
+			"port": "",
+			"key": "",
+			"tls": {
+				"cert": "",
+				"key": ""
+			},
+			"delegator": {
+				"port": ""
+			}
+		},
+		"pay": {
+			"address": "",
+			"port": "",
+			"protocol": "",
+			"tls": {
+				"cert": "",
+				"key": ""
+			},
+			"auth_key": ""
+		},
+		"krab": {
+			"url": "127.0.0.1:10000",
+			"tls": {
+				"cert_path": "",
+				"key_file": ""
+			},
+			"auth_key": "password123",
+			"log_file": "./templogs.log",
+			"keystore_password": "password123"
+		},
+		"krab_fallback": {
+			"url": "127.0.0.1:10000",
+			"TLS": {
+					"cert_path": "",
+					"key_file": ""
+			},
+			"auth_key": "password123",
+			"log_file": "./templogs.log",
+			"keystore_password": "password123"
+		}
+	},
+	"ethereum": { 
+		"account": {
+			"address": "",
+			"key_file": "/data/ethereum/key",
+			"key_pass": ""
+		},
+		"connection": {
+			"rpc": {
+				"ip": "127.0.0.1",
+				"port": "8545"
+			},
+			"ipc": {
+				"path": "/data/ethereum/geth.ipc"
+			},
+			"infura": {
+				"url": ""
+			}
+		},
+		"contracts": {
+			"payment_contract_address": ""
+		}
+	},
+	"ipfs_cluster": {
+		"api_connection": {
+			"host": "127.0.0.1",
+			"Port": "9094"
+		}
+	},
+	"ipfs": {
+		"api_connection": {
+			"host": "127.0.0.1",
+			"port": "5001"
+		},
+		"keystore_path": "/tmp"
+	},
+	"rabbitmq": {
+		"url": "amqp://guest:guest@localhost:5672/",
+		"tls_config": {
+			"cert_file": "",
+			"key_file": "",
+			"ca_cert_file": ""
+		}
+	},
+	"sendgrid": {
+		"api_key": "",
+		"email_address": "",
+		"email_name": ""
+	},
+	"stripe": {
+		"publishable_key": "",
+		"secret_key": ""
+	},
+	"wallets": {
+		"eth": "",
+		"rtc": "",
+		"xmr": "",
+		"dash": "yfLFuyfSNHNtwKbfaGXh17maGKAAgd2A4z",
+		"btc": "",
+		"ltc": ""
+	},
+	"log_dir": "./tmp"
+}
