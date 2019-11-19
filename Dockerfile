@@ -30,7 +30,7 @@ RUN mkdir /temporal \
     mkdir -p /var/log/temporal
 
 # Set default configuration
-COPY ./testenv/config.json /temporal/config.json
+ADD https://raw.githubusercontent.com/AIDXNZ/KubeIPFS/master/config.json /temporal/config.json
 
 # Set default command
 ENTRYPOINT [ "temporal", "-config", "/temporal/config.json" ]
