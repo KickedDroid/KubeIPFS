@@ -27,8 +27,8 @@
 	},
 	"database": {
 		"name": "temporal",
-		"url": "127.0.0.1",
-		"port": "5433",
+		"url": "172.17.0.6",
+		"port": "5432",
 		"username": "postgres",
 		"password": "password123"
 	},
@@ -134,7 +134,7 @@
 		"keystore_path": "/tmp"
 	},
 	"rabbitmq": {
-		"url": "amqp://guest:guest@localhost:5672/",
+		"url": "amqp://172.17.0.7:5672/",
 		"tls_config": {
 			"cert_file": "",
 			"key_file": "",
