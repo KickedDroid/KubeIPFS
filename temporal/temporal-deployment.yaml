@@ -15,8 +15,23 @@ spec:
         app: temporal
         role: node
     spec:
-      containers:
 
+      initContainers: 
+        - name: config
+          image: busybox
+          command: 
+          - wget
+          - "-O"
+          - "/temporal/config.json"
+          - https://raw.githubusercontent.com/AIDXNZ/KubeIPFS/master/config.json
+          volumeMounts:
+            - name: workdir
+            mountPath: "/temporal"
+    volumes: 
+      - name: workdir
+        emptyDir: {}
+
+      containers:
 
       - name: temporal
         image: "docker.io/rtradetech/temporal:latest"
@@ -31,10 +46,13 @@ spec:
             containerPort: 5433
           - name: rabbitmq 
             containerPort: 5672
+        volumeMounts:
+          - name: workdir
+            mountPath: "/temporal"
 
 
       - name: krab
-        image: "docker.io/rtradetech/temporal:latest"
+        image: "docker.io/rtradetech/temporal:latest"     
         args: ["krab"]
         ports: 
           - name: ipfs
@@ -47,11 +65,14 @@ spec:
             containerPort: 5433
           - name: rabbitmq 
             containerPort: 5672
+        volumeMounts:
+          - name: workdir
+            mountPath: "/temporal"
 
 
       - name: queue-email-send
-        image: "docker.io/rtradetech/temporal:latest"
-        args: ["queue email-send"]
+        image: "docker.io/rtradetech/temporal:latest"  
+        args: ["queue", "email-send"]
         ports: 
           - name: ipfs
             protocol: TCP
@@ -63,11 +84,14 @@ spec:
             containerPort: 5433
           - name: rabbitmq 
             containerPort: 5672
+        volumeMounts:
+          - name: workdir
+            mountPath: "/temporal"
 
 
       - name: queue-ipfs-cluster
-        image: "docker.io/rtradetech/temporal:latest"
-        args: ["queue ipfs cluster"]
+        image: "docker.io/rtradetech/temporal:latest" 
+        args: ["queue", "ipfs", "cluster"]
         ports: 
           - name: ipfs
             protocol: TCP
@@ -79,11 +103,14 @@ spec:
             containerPort: 5433
           - name: rabbitmq 
             containerPort: 5672
+        volumeMounts:
+          - name: workdir
+            mountPath: "/temporal"
 
 
       - name: queue-ipfs-ipns-entry
-        image: "docker.io/rtradetech/temporal:latest"
-        args: ["queue ipfs ipns-entry"]
+        image: "docker.io/rtradetech/temporal:latest"  
+        args: ["queue", "ipfs", "ipns-entry"]
         ports: 
           - name: ipfs
             protocol: TCP
@@ -95,11 +122,15 @@ spec:
             containerPort: 5433
           - name: rabbitmq 
             containerPort: 5672
+        volumeMounts:
+          - name: workdir
+            mountPath: "/temporal"
+
 
 
       - name: queue-ipfs-key-creation
-        image: "docker.io/rtradetech/temporal:latest"
-        args: ["queue ipfs key-creation"]
+        image: "docker.io/rtradetech/temporal:latest"  
+        args: ["queue", "ipfs", "key-creation"]
         ports: 
           - name: ipfs
             protocol: TCP
@@ -111,11 +142,14 @@ spec:
             containerPort: 5433
           - name: rabbitmq 
             containerPort: 5672
+        volumeMounts:
+          - name: workdir
+            mountPath: "/temporal"
 
 
       - name: queue-ipfs-pin
-        image: "docker.io/rtradetech/temporal:latest"
-        args: ["queue ipfs pin"]
+        image: "docker.io/rtradetech/temporal:latest"  
+        args: ["queue", "ipfs pin"]
         ports: 
           - name: ipfs
             protocol: TCP
@@ -127,6 +161,9 @@ spec:
             containerPort: 5433
           - name: rabbitmq 
             containerPort: 5672
+        volumeMounts:
+          - name: workdir
+            mountPath: "/temporal"
 
 
       - name: go-ipfs
