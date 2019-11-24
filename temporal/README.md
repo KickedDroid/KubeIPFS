@@ -31,7 +31,7 @@ data:
   POSTGRES_USER: postgres
   POSTGRES_PASSWORD: password123
   ``````
-    Apply the postrgres-configmap.yaml
+   Apply the postrgres-configmap.yaml
   
   ``kubectl create -f postgres-configmap.yaml``
   
