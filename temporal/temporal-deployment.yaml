@@ -5,6 +5,7 @@ metadata:
   labels:
     name: temporal
 spec:
+  serviceName: "temporal"
   replicas: 1
   selector:
     matchLabels: 
@@ -14,8 +15,14 @@ spec:
       labels:
         app: temporal
         role: node
+
     spec:
 
+      volumes: 
+      - name: workdir
+      persistentVolumeClaim: 
+        claimName: workdir
+    
       initContainers: 
         - name: config
           image: busybox
@@ -24,13 +31,20 @@ spec:
           - "-O"
           - "/temporal/config.json"
           - https://raw.githubusercontent.com/AIDXNZ/KubeIPFS/master/config.json
+          command: 
+          - wget
+          - "-O"
+          - "/temporal/certs/api.cert"
+          - https://raw.githubusercontent.com/RTradeLtd/testenv/45aa59073e7f85da6604334547f7f1c3e7e2ef9d/certs/api.cert
+          command: 
+          - wget
+          - "-O"
+          - "/temporal/certs/api.key"
+          - https://raw.githubusercontent.com/RTradeLtd/testenv/45aa59073e7f85da6604334547f7f1c3e7e2ef9d/certs/api.key
           volumeMounts:
             - name: workdir
-            mountPath: "/temporal"
-    volumes: 
-      - name: workdir
-        emptyDir: {}
-
+              mountPath: "/temporal"
+    
       containers:
 
       - name: temporal
@@ -149,7 +163,7 @@ spec:
 
       - name: queue-ipfs-pin
         image: "docker.io/rtradetech/temporal:latest"  
-        args: ["queue", "ipfs pin"]
+        args: ["queue", "ipfs", "pin"]
         ports: 
           - name: ipfs
             protocol: TCP
@@ -207,3 +221,16 @@ spec:
         - containerPort: 9096
           name: "cluster"
           protocol: "TCP"
+  
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: workdir
+spec:
+  accessModes: 
+    - ReadWriteOnce
+  storageClassName: standard
+  resources:
+    requests:
+      storage: 1Gi # make this bigger in production
