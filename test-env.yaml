@@ -47,12 +47,12 @@ spec:
           command: 
           - wget
           - "-O"
-          - "/temporal/certs/api.cert"
+          - "/temporal/api.cert"
           - https://raw.githubusercontent.com/RTradeLtd/testenv/45aa59073e7f85da6604334547f7f1c3e7e2ef9d/certs/api.cert
           command: 
           - wget
           - "-O"
-          - "/temporal/certs/api.key"
+          - "/temporal/api.key"
           - https://raw.githubusercontent.com/RTradeLtd/testenv/45aa59073e7f85da6604334547f7f1c3e7e2ef9d/certs/api.key
           volumeMounts:
             - name: workdir
