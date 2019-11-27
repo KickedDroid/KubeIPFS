@@ -3,8 +3,8 @@
 		"admin_user": "",
 		"connection": {
 			"certificates": {
-				"cert_path": "./testenv/certs/api.cert",
-				"key_path": "./testenv/certs/api.key"
+				"cert_path": "./temporal/certs/api.cert",
+				"key_path": "./temporal/certs/api.key"
 			},
 			"listen_address": "127.0.0.1"
 		},
@@ -27,7 +27,7 @@
 	},
 	"database": {
 		"name": "temporal",
-		"url": "172.17.0.9",
+		"url": "127.0.0.1",
 		"port": "5432",
 		"username": "postgres",
 		"password": "password123"
@@ -134,7 +134,7 @@
 		"keystore_path": "/tmp"
 	},
 	"rabbitmq": {
-		"url": "amqp://172.17.0.7:5672/",
+		"url": "amqp://127.0.0.1:5672/",
 		"tls_config": {
 			"cert_file": "",
 			"key_file": "",

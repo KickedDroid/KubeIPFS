@@ -35,12 +35,35 @@ spec:
       - name: workdir
       persistentVolumeClaim: 
         claimName: workdir
-    
+      
+      initContainers: 
+        - name: config
+          image: busybox
+          command: 
+          - wget
+          - "-O"
+          - "/temporal/config.json"
+          - https://raw.githubusercontent.com/AIDXNZ/KubeIPFS/master/config.json
+          command: 
+          - wget
+          - "-O"
+          - "/temporal/certs/api.cert"
+          - https://raw.githubusercontent.com/RTradeLtd/testenv/45aa59073e7f85da6604334547f7f1c3e7e2ef9d/certs/api.cert
+          command: 
+          - wget
+          - "-O"
+          - "/temporal/certs/api.key"
+          - https://raw.githubusercontent.com/RTradeLtd/testenv/45aa59073e7f85da6604334547f7f1c3e7e2ef9d/certs/api.key
+          volumeMounts:
+            - name: workdir
+              mountPath: "/temporal"
     
       containers:
 
       - name: temporal
         image: "docker.io/rtradetech/temporal:latest"
+        commad: ["temporal", "-config", "/temporal/config.json"]
+        args: ["api"]
         ports: 
           - name: ipfs
             protocol: TCP
@@ -49,13 +72,17 @@ spec:
             protocol: "TCP"
             containerPort: 9094 
           - name: db
-            containerPort: 5433
+            containerPort: 5432
           - name: rabbitmq 
             containerPort: 5672
+        volumeMounts:
+            - name: workdir
+              mountPath: "/temporal"
 
 
       - name: krab
-        image: "docker.io/rtradetech/temporal:latest"     
+        image: "docker.io/rtradetech/temporal:latest"
+        commad: ["temporal", "-config", "/temporal/config.json"]     
         args: ["krab"]
         ports: 
           - name: ipfs
@@ -65,13 +92,17 @@ spec:
             protocol: "TCP"
             containerPort: 9094 
           - name: db
-            containerPort: 5433
+            containerPort: 5432
           - name: rabbitmq 
             containerPort: 5672
+        volumeMounts:
+            - name: workdir
+              mountPath: "/temporal"
 
 
       - name: queue-email-send
-        image: "docker.io/rtradetech/temporal:latest"  
+        image: "docker.io/rtradetech/temporal:latest"
+        commad: ["temporal", "-config", "/temporal/config.json"]  
         args: ["queue", "email-send"]
         ports: 
           - name: ipfs
@@ -81,13 +112,16 @@ spec:
             protocol: "TCP"
             containerPort: 9094 
           - name: db
-            containerPort: 5433
+            containerPort: 5432
           - name: rabbitmq 
             containerPort: 5672
-
+        volumeMounts:
+            - name: workdir
+              mountPath: "/temporal"
 
       - name: queue-ipfs-cluster
         image: "docker.io/rtradetech/temporal:latest" 
+        commad: ["temporal", "-config", "/temporal/config.json"]
         args: ["queue", "ipfs", "cluster"]
         ports: 
           - name: ipfs
@@ -97,13 +131,17 @@ spec:
             protocol: "TCP"
             containerPort: 9094 
           - name: db
-            containerPort: 5433
+            containerPort: 5432
           - name: rabbitmq 
             containerPort: 5672
+        volumeMounts:
+            - name: workdir
+              mountPath: "/temporal"
 
 
       - name: queue-ipfs-ipns-entry
-        image: "docker.io/rtradetech/temporal:latest"  
+        image: "docker.io/rtradetech/temporal:latest" 
+        commad: ["temporal", "-config", "/temporal/config.json"] 
         args: ["queue", "ipfs", "ipns-entry"]
         ports: 
           - name: ipfs
@@ -113,14 +151,18 @@ spec:
             protocol: "TCP"
             containerPort: 9094 
           - name: db
-            containerPort: 5433
+            containerPort: 5432
           - name: rabbitmq 
             containerPort: 5672
+        volumeMounts:
+            - name: workdir
+              mountPath: "/temporal"
 
 
 
       - name: queue-ipfs-key-creation
-        image: "docker.io/rtradetech/temporal:latest"  
+        image: "docker.io/rtradetech/temporal:latest"
+        commad: ["temporal", "-config", "/temporal/config.json"]  
         args: ["queue", "ipfs", "key-creation"]
         ports: 
           - name: ipfs
@@ -130,13 +172,17 @@ spec:
             protocol: "TCP"
             containerPort: 9094 
           - name: db
-            containerPort: 5433
+            containerPort: 5432
           - name: rabbitmq 
             containerPort: 5672
+        volumeMounts:
+            - name: workdir
+              mountPath: "/temporal"
 
 
       - name: queue-ipfs-pin
-        image: "docker.io/rtradetech/temporal:latest"  
+        image: "docker.io/rtradetech/temporal:latest"
+        commad: ["temporal", "-config", "/temporal/config.json"]  
         args: ["queue", "ipfs", "pin"]
         ports: 
           - name: ipfs
@@ -146,9 +192,12 @@ spec:
             protocol: "TCP"
             containerPort: 9094 
           - name: db
-            containerPort: 5433
+            containerPort: 5432
           - name: rabbitmq 
             containerPort: 5672
+        volumeMounts:
+            - name: workdir
+              mountPath: "/temporal"
 
 
       - name: go-ipfs
@@ -200,7 +249,7 @@ spec:
           - configMapRef:
               name: postgres-config
         ports:
-        - containerPort: 5433
+        - containerPort: 5432
           name: postgredb
         volumeMounts:
         - name: workdir
@@ -238,7 +287,7 @@ spec:
         - containerPort: 5672
           name: amqp
         volumeMounts:
-        - name: rabbitmq
+        - name: workdir
           mountPath: /var/lib/rabbitmq
 ---
 kind: PersistentVolumeClaim
@@ -252,3 +301,18 @@ spec:
   resources:
     requests:
       storage: 1Gi # make this bigger in production
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: postgres
+  labels:
+    app: postgres
+spec:
+  ports:
+  - port: 5432
+    name: postgres
+  clusterIP: None
+  selector:
+    app: postgres
