@@ -1,0 +1,254 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: postgres-config
+  labels:
+    app: postgres
+data:
+  POSTGRES_DB: temporal
+  POSTGRES_USER: postgres
+  POSTGRES_PASSWORD: password123
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: temporal
+  labels:
+    name: temporal
+spec:
+  serviceName: "temporal"
+  replicas: 1
+  selector:
+    matchLabels: 
+      app: temporal
+  template:
+    metadata:
+      labels:
+        app: temporal
+        role: node
+
+    spec:
+
+      volumes: 
+      - name: workdir
+      persistentVolumeClaim: 
+        claimName: workdir
+    
+    
+      containers:
+
+      - name: temporal
+        image: "docker.io/rtradetech/temporal:latest"
+        ports: 
+          - name: ipfs
+            protocol: TCP
+            containerPort: 5001
+          - name: "api"
+            protocol: "TCP"
+            containerPort: 9094 
+          - name: db
+            containerPort: 5433
+          - name: rabbitmq 
+            containerPort: 5672
+
+
+      - name: krab
+        image: "docker.io/rtradetech/temporal:latest"     
+        args: ["krab"]
+        ports: 
+          - name: ipfs
+            protocol: TCP
+            containerPort: 5001
+          - name: "api"
+            protocol: "TCP"
+            containerPort: 9094 
+          - name: db
+            containerPort: 5433
+          - name: rabbitmq 
+            containerPort: 5672
+
+
+      - name: queue-email-send
+        image: "docker.io/rtradetech/temporal:latest"  
+        args: ["queue", "email-send"]
+        ports: 
+          - name: ipfs
+            protocol: TCP
+            containerPort: 5001
+          - name: "api"
+            protocol: "TCP"
+            containerPort: 9094 
+          - name: db
+            containerPort: 5433
+          - name: rabbitmq 
+            containerPort: 5672
+
+
+      - name: queue-ipfs-cluster
+        image: "docker.io/rtradetech/temporal:latest" 
+        args: ["queue", "ipfs", "cluster"]
+        ports: 
+          - name: ipfs
+            protocol: TCP
+            containerPort: 5001
+          - name: "api"
+            protocol: "TCP"
+            containerPort: 9094 
+          - name: db
+            containerPort: 5433
+          - name: rabbitmq 
+            containerPort: 5672
+
+
+      - name: queue-ipfs-ipns-entry
+        image: "docker.io/rtradetech/temporal:latest"  
+        args: ["queue", "ipfs", "ipns-entry"]
+        ports: 
+          - name: ipfs
+            protocol: TCP
+            containerPort: 5001
+          - name: "api"
+            protocol: "TCP"
+            containerPort: 9094 
+          - name: db
+            containerPort: 5433
+          - name: rabbitmq 
+            containerPort: 5672
+
+
+
+      - name: queue-ipfs-key-creation
+        image: "docker.io/rtradetech/temporal:latest"  
+        args: ["queue", "ipfs", "key-creation"]
+        ports: 
+          - name: ipfs
+            protocol: TCP
+            containerPort: 5001
+          - name: "api"
+            protocol: "TCP"
+            containerPort: 9094 
+          - name: db
+            containerPort: 5433
+          - name: rabbitmq 
+            containerPort: 5672
+
+
+      - name: queue-ipfs-pin
+        image: "docker.io/rtradetech/temporal:latest"  
+        args: ["queue", "ipfs", "pin"]
+        ports: 
+          - name: ipfs
+            protocol: TCP
+            containerPort: 5001
+          - name: "api"
+            protocol: "TCP"
+            containerPort: 9094 
+          - name: db
+            containerPort: 5433
+          - name: rabbitmq 
+            containerPort: 5672
+
+
+      - name: go-ipfs
+        image: "ipfs/go-ipfs"
+        ports:
+            - name: swarm
+              protocol: TCP
+              containerPort: 4001
+            - name: swarm-udp
+              protocol: UDP
+              containerPort: 4002
+            - name: api
+              protocol: TCP
+              containerPort: 5001
+            - name: ws
+              protocol: TCP
+              containerPort: 8081
+            - name: http
+              protocol: TCP
+              containerPort: 8080
+
+
+      - name: ipfs-cluster
+        image: "docker.io/ipfs/ipfs-cluster:latest"
+        env: 
+        - name: CLUSTER_SECRET
+          value: "9d171041f5ffd244316307e2141a6890dbf5fb4c00dfb38fd61721b88a4adf87"
+        ports:
+        - containerPort: 4001
+          name: "swarm"
+          protocol: "TCP"
+        - containerPort: 5001
+          name: "api"
+          protocol: "TCP"
+        - containerPort: 9094
+          name: "clusterapi"
+          protocol: "TCP"
+        - containerPort: 9095
+          name: "clusterproxy"
+          protocol: "TCP"
+        - containerPort: 9096
+          name: "cluster"
+          protocol: "TCP"
+        
+
+      - name: postgres
+        image: postgres:latest
+        envFrom:
+          - configMapRef:
+              name: postgres-config
+        ports:
+        - containerPort: 5433
+          name: postgredb
+        volumeMounts:
+        - name: workdir
+          mountPath: /var/lib/postgresql/data
+          subPath: postgres
+
+      - name: rabbitmq
+        image: rabbitmq:3.6.6-management-alpine
+        lifecycle:
+          postStart:
+            exec:
+              command:
+              - /bin/sh
+              - -c
+              - >
+                if [ -z "$(grep rabbitmq /etc/resolv.conf)" ]; then
+                  sed "s/^search \([^ ]\+\)/search rabbitmq.\1 \1/" /etc/resolv.conf > /etc/resolv.conf.new;
+                  cat /etc/resolv.conf.new > /etc/resolv.conf;
+                  rm /etc/resolv.conf.new;
+                fi;
+                until rabbitmqctl node_health_check; do sleep 1; done;
+                if [[ "$HOSTNAME" != "rabbitmq-0" && -z "$(rabbitmqctl cluster_status | grep rabbitmq-0)" ]]; then
+                  rabbitmqctl stop_app;
+                  rabbitmqctl join_cluster rabbit@rabbitmq-0;
+                  rabbitmqctl start_app;
+                fi;
+                rabbitmqctl set_policy ha-all "." '{"ha-mode":"exactly","ha-params":3,"ha-sync-mode":"automatic"}'
+        env:
+        - name: RABBITMQ_ERLANG_COOKIE
+          valueFrom:
+            secretKeyRef:
+              name: rabbitmq-config
+              key: erlang-cookie
+        ports:
+        - containerPort: 5672
+          name: amqp
+        volumeMounts:
+        - name: rabbitmq
+          mountPath: /var/lib/rabbitmq
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: workdir
+spec:
+  accessModes: 
+    - ReadWriteOnce
+  storageClassName: standard
+  resources:
+    requests:
+      storage: 1Gi # make this bigger in production
