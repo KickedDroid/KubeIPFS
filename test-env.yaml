@@ -44,16 +44,6 @@ spec:
           - "-O"
           - "/temporal/config.json"
           - https://raw.githubusercontent.com/AIDXNZ/KubeIPFS/master/config.json
-          - & 
-          - wget
-          - "-O"
-          - "/temporal/api.cert"
-          - https://raw.githubusercontent.com/RTradeLtd/testenv/45aa59073e7f85da6604334547f7f1c3e7e2ef9d/certs/api.cert
-          - & 
-          - wget
-          - "-O"
-          - "/temporal/api.key"
-          - https://raw.githubusercontent.com/RTradeLtd/testenv/45aa59073e7f85da6604334547f7f1c3e7e2ef9d/certs/api.key
           volumeMounts:
             - name: workdir
               mountPath: "/temporal"
@@ -62,7 +52,7 @@ spec:
 
       - name: temporal
         image: "docker.io/rtradetech/temporal:latest"
-        commad: ["temporal", "-config", "/temporal/config.json"]
+        commad: ["temporal", "-config", "config.json"]
         args: ["api"]
         ports: 
           - name: ipfs
@@ -121,7 +111,7 @@ spec:
 
       - name: queue-ipfs-cluster
         image: "docker.io/rtradetech/temporal:latest" 
-        commad: ["temporal", "-config", "/temporal/config.json"]
+        commad: ["temporal", "-config", "config.json"]
         args: ["queue", "ipfs", "cluster"]
         ports: 
           - name: ipfs
@@ -141,7 +131,7 @@ spec:
 
       - name: queue-ipfs-ipns-entry
         image: "docker.io/rtradetech/temporal:latest" 
-        commad: ["temporal", "-config", "/temporal/config.json"] 
+        commad: ["temporal", "-config", "config.json"] 
         args: ["queue", "ipfs", "ipns-entry"]
         ports: 
           - name: ipfs
@@ -162,7 +152,7 @@ spec:
 
       - name: queue-ipfs-key-creation
         image: "docker.io/rtradetech/temporal:latest"
-        commad: ["temporal", "-config", "/temporal/config.json"]  
+        commad: ["temporal", "-config", "config.json"]  
         args: ["queue", "ipfs", "key-creation"]
         ports: 
           - name: ipfs
@@ -241,20 +231,6 @@ spec:
         - containerPort: 9096
           name: "cluster"
           protocol: "TCP"
-        
-
-      - name: postgres
-        image: postgres:latest
-        envFrom:
-          - configMapRef:
-              name: postgres-config
-        ports:
-        - containerPort: 5432
-          name: postgredb
-        volumeMounts:
-        - name: workdir
-          mountPath: /var/lib/postgresql/data
-          subPath: postgres
 
       - name: rabbitmq
         image: rabbitmq:3.6.6-management-alpine

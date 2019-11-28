@@ -27,7 +27,7 @@
 	},
 	"database": {
 		"name": "temporal",
-		"url": "127.0.0.1",
+		"url": "172.17.0.8",
 		"port": "5432",
 		"username": "postgres",
 		"password": "password123"
