@@ -44,12 +44,12 @@ spec:
           - "-O"
           - "/temporal/config.json"
           - https://raw.githubusercontent.com/AIDXNZ/KubeIPFS/master/config.json
-          command: 
+          - & 
           - wget
           - "-O"
           - "/temporal/api.cert"
           - https://raw.githubusercontent.com/RTradeLtd/testenv/45aa59073e7f85da6604334547f7f1c3e7e2ef9d/certs/api.cert
-          command: 
+          - & 
           - wget
           - "-O"
           - "/temporal/api.key"
@@ -82,7 +82,7 @@ spec:
 
       - name: krab
         image: "docker.io/rtradetech/temporal:latest"
-        commad: ["temporal", "-config", "/temporal/config.json"]     
+        commad: ["temporal", "-config", "config.json"]     
         args: ["krab"]
         ports: 
           - name: ipfs
@@ -102,7 +102,7 @@ spec:
 
       - name: queue-email-send
         image: "docker.io/rtradetech/temporal:latest"
-        commad: ["temporal", "-config", "/temporal/config.json"]  
+        commad: ["temporal", "-config", "config.json"]  
         args: ["queue", "email-send"]
         ports: 
           - name: ipfs
