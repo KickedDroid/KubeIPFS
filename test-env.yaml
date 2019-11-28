@@ -47,6 +47,31 @@ spec:
           volumeMounts:
             - name: workdir
               mountPath: "/temporal"
+
+      initContainers: 
+        - name: config2
+          image: busybox
+          command: 
+          - wget
+          - "-O"
+          - "/temporal/api.cert"
+          - https://raw.githubusercontent.com/RTradeLtd/testenv/master/certs/api.cert
+          volumeMounts:
+            - name: workdir
+              mountPath: "/temporal"
+              
+      initContainers: 
+        - name: config3
+          image: busybox
+          command: 
+          - wget
+          - "-O"
+          - "/temporal/api.key"
+          - https://raw.githubusercontent.com/RTradeLtd/testenv/master/certs/api.key
+          volumeMounts:
+            - name: workdir
+              mountPath: "/temporal"
+      
     
       containers:
 
