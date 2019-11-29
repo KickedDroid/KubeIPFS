@@ -3,8 +3,8 @@
 		"admin_user": "",
 		"connection": {
 			"certificates": {
-				"cert_path": "/temporal/api.cert",
-				"key_path": "/temporal/api.key"
+				"cert_path": "",
+				"key_path": ""
 			},
 			"listen_address": "127.0.0.1"
 		},

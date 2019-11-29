@@ -33,10 +33,17 @@ sleep 1
 echo "Deploying IPFS Cluster"
 kubectl apply -f ipfs-cluster-deployment.yaml
 
+printf "Finding Peers....\n"
+sleep 20
+
+
+echo "PEERS"
+
+POD=$(kubectl get pod -l app=ipfs-cluster -o jsonpath="{.items[0].metadata.name}")
+
+kubectl exec $POD ipfs-cluster-ctl peers ls
 
 echo  "done"
-
-
 
 
 set +ex
