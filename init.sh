@@ -2,33 +2,41 @@
 
 set -e
 
-echo "Waiting for all containers to be running"
+echo "  _  ___    _ ____  ______   _____ _____  ______ _____ 
+ | |/ | |  | |  _ \|  ____| |_   _|  __ \|  ____/ ____|
+ | ' /| |  | | |_) | |__      | | | |__) | |__ | (___  
+ |  < | |  | |  _ <|  __|     | | |  ___/|  __| \___ \ 
+ | . \| |__| | |_) | |____   _| |_| |    | |    ____) |
+ |_|\__\____/|____/|______| |_____|_|    |_|   |_____/ 
+                                                       
+                                                       
 
-while true; do
-    sleep 10
-    statuses=`kubectl get pods -l 'app=ipfs-cluster' -o jsonpath='{.items[*].status.phase}' | xargs -n1`
-    echo $statuses
-    all_running="yes"
-    for s in $statuses; do
-        if [[ "$s" != "Running" ]]; then
-            all_running="no"
-        fi
-    done
-    if [[ $all_running == "yes" ]]; then
-        break
-    fi
-done
+"
 
-sleep 5
+echo "Generating erlang cookie..."
+#kubectl create secret generic rabbitmq-config --from-literal=erlang-cookie=c-is-for-cookie-thats-good-enough-for-me
 
-echo
-echo "Adding peers to cluster"
-pods=`kubectl get pods -l 'app=ipfs-cluster' -o jsonpath='{.items[*].metadata.name}' | xargs -n1`
-bootstrapper=`kubectl get pods -l 'app=ipfs-cluster,role=bootstrapper' -o jsonpath='{.items[*].metadata.name}'`
+sleep 1
 
-for p in $pods; do
-    addr=$(echo "/ip4/"`kubectl get pods $p -o jsonpath='{.status.podIP}'`"/tcp/9096/ipfs/"`kubectl exec $p -- ipfs-cluster-ctl --enc json id | jq -r .id`)
-    kubectl exec $bootstrapper -- ipfs-cluster-ctl peers add "$addr"
-done
+echo "Deploying rabbitmq..."
+#kubectl apply -f /temporal/rabbitmq/rabbitmq-deployment.yaml
+
+sleep 1
+
+echo "Applying postgres config..."
+#kubectl create -f /temporal/postgres/postgres-configmap.yaml
+echo "Deploying postgres"
+#kubectl create -f /temporal/postgres/postgres-deployment.yaml
+
+sleep 1
+
+echo "Deploying IPFS Cluster"
+kubectl apply -f ipfs-cluster-deployment.yaml
+
+
+echo  "done"
+
+
+
 
 set +ex
