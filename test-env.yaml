@@ -48,7 +48,6 @@ spec:
             - name: workdir
               mountPath: "/temporal"
 
-      initContainers: 
         - name: config2
           image: busybox
           command: 
@@ -59,8 +58,7 @@ spec:
           volumeMounts:
             - name: workdir
               mountPath: "/temporal"
-              
-      initContainers: 
+               
         - name: config3
           image: busybox
           command: 
