@@ -18,7 +18,6 @@ metadata:
   labels:
     name: temporal
 spec:
-  serviceName: "temporal"
   replicas: 1
   selector:
     matchLabels: 

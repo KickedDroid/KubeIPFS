@@ -2,14 +2,16 @@
 
 set -e
 
-echo "  _  ___    _ ____  ______   _____ _____  ______ _____ 
- | |/ | |  | |  _ \|  ____| |_   _|  __ \|  ____/ ____|
- | ' /| |  | | |_) | |__      | | | |__) | |__ | (___  
- |  < | |  | |  _ <|  __|     | | |  ___/|  __| \___ \ 
- | . \| |__| | |_) | |____   _| |_| |    | |    ____) |
- |_|\__\____/|____/|______| |_____|_|    |_|   |_____/ 
-                                                       
-                                                       
+echo "
+  _______                                   _ 
+ |__   __|                                 | |
+    | | ___ _ __ ___  _ __   ___  _ __ __ _| |
+    | |/ _ \ '_ ` _ \| '_ \ / _ \| '__/ _` | |
+    | |  __/ | | | | | |_) | (_) | | | (_| | |
+    |_|\___|_| |_| |_| .__/ \___/|_|  \__,_|_|
+                     | |                      
+                     |_|                      
+
 
 "
 
@@ -18,13 +20,10 @@ kubectl create secret generic rabbitmq-config --from-literal=erlang-cookie=c-is-
 
 sleep 1
 
-echo "Deploying Temporal Stack...."
-kubectl apply -f /temporal/testenv/test-env.yaml
+echo "Deploying postgres...."
+kubectl apply -f postgres.yaml
 
-sleep 20
 
-POD=$(kubectl get pod -l app=temporal -o jsonpath="{.items[0].metadata.name}")
-
-kubectl get all
+kubectl get services
 
 set +ex
