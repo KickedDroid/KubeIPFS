@@ -21,7 +21,7 @@ spec:
       volumes: 
       - name: workdir
         persistentVolumeClaim: 
-        claimName: workdir
+          claimName: workdir
       
       initContainers: 
         - name: config
