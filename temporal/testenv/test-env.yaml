@@ -20,8 +20,6 @@ spec:
 
       volumes: 
       - name: workdir
-      configMap: 
-        name: temporal-config
       persistentVolumeClaim: 
         claimName: workdir
       
