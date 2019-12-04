@@ -26,4 +26,6 @@ kubectl apply -f postgres.yaml
 
 kubectl get services
 
+
+
 set +ex
