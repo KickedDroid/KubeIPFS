@@ -16,40 +16,47 @@ kubernetes   ClusterIP   10.96.0.1        <none>        443/TCP    61m
 postgres     ClusterIP   10.103.116.186   <none>        5432/TCP   0s
 ``````
 
-The postgres CLUSTER-IP is the db address we point to in the config.json file. A template file can be found here [testenv/config.json](https://github.com/RTradeLtd/testenv/blob/master/config.json)
+The postgres CLUSTER-IP is the `DATABASE_URL` we point to in the temporal-config.yaml file.
 
-### Edit config.json
+### Edit temporal-config.yaml
 
-In the config.json change the url to the CLUSTER-IP of the postgres service
-
-``````
-"database": {
-		"name": "temporal",
-		"url": "CLUSTER-IP",
-		"port": "5432",
-		"username": "postgres",
-		"password": "password123"
-	},
-``````
-
-*Note: You will need to host your custom config.json remotely for now. This will change in the future.*
-
-### Edit testenv.yaml
-
-In the test-env.yaml file search for the init container named config on line 29. 
+In the temporal-config.yaml change the `DATABASE_URL` to the CLUSTER-IP of the postgres service
 
 ``````
-        - name: config
-          image: busybox
-          command: 
-          - wget
-          - "-O"
-          - "/temporal/config.json"
-          - https://raw.githubusercontent.com/AIDXNZ/KubeIPFS/master/config.json
-          
-``````
-Change the https://raw.githubusercontent.com/AIDXNZ/KubeIPFS/master/config.json to your remote url containing custom config.json file
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: temporal-config
+  namespace: default
+data:
 
+  CONFIG_DAG: ""
+
+  # Api config
+  API_CONNECTION_CERTIFICATES_CERTPATH: "/temporal/api.cert"
+  API_CONNECTION_CERTIFICATES_KEYPATH: "/temporal/api.key"
+
+  
+  # database config
+  DATABASE_NAME: "temporal"
+  DATABASE_URL:  "10.103.116.186"
+  DATABASE_PORT: "5432"
+  DATABASE_USERNAME: "postgres"
+  DATABASE_PASSWORD: "password123"
+
+
+  # IPFS config
+  IPFS_API_CONNECTION_HOST: "127.0.0.1"
+  IPFS_API_CONNECTION_PORT: "5001"
+  IPFS_KEYSTORE_PATH: "/tmp"
+
+  # IPFS Cluster config
+  IPFS_CLUSTER_API_CONNECTION_HOST: "127.0.0.1"
+  IPFS_CLUSTER_API_CONNECTION_PORT: "9094"
+    
+  #rabbitmq config
+  RABBITMQ_URL: "amqp://127.0.0.1:5672/" 
+``````
 
 ## Deploy Temporal 
 
