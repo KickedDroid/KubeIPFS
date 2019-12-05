@@ -1,0 +1,29 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: temporal-config
+  namespace: default
+data:
+
+  # Api config
+  API_CONNECTION_CERTIFICATES_CERTPATH: "/temporal/api.cert"
+  API_CONNECTION_CERTIFICATES_KEYPATH: "/temporal/api.key"
+
+  
+  # database config
+  DATABASE_NAME: "temporal"
+  DATABASE_URL:  "0.0.0.0.0"
+  DATABASE_PORT: "5432"
+  DATABASE_USERNAME: "postgres"
+  DATABASE_PASSWORD: "password123"
+
+
+  # IPFS config
+  IPFS_API_CONNECTION_HOST: "127.0.0.1"
+  IPFS_API_CONNECTION_PORT: "5001"
+  IPFS_KEYSTORE_PATH: "/tmp"
+
+  # IPFS Cluster config
+  IPFS_CLUSTER_API_CONNECTION_HOST: "127.0.0.1"
+  IPFS_CLUSTER_API_CONNECTION_PORT: "9094"
+    
