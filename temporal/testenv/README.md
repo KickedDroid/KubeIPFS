@@ -20,7 +20,7 @@ The postgres CLUSTER-IP is the `DATABASE_URL` we point to in the temporal-config
 
 ### Edit temporal-config.yaml
 
-In the config.json change the url to the CLUSTER-IP of the postgres service
+In the temporal-config.yaml change the `DATABASE_URL` to the CLUSTER-IP of the postgres service
 
 ``````
 apiVersion: v1
