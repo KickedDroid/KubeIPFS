@@ -33,7 +33,11 @@ while true; do
     fi
 done
 
+kubectl get pods 
 
+echo " "
+
+sleep 5 
 
 echo "PEERS"
 

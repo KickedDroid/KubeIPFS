@@ -61,8 +61,8 @@ spec:
       containers:
 
       - name: temporal
-        image: "docker.io/rtradetech/temporal:v2.4.0-rc1"
-        command: ["temporal", "-config", "/temporal/config.json"]
+        image: "docker.io/rtradetech/temporal:v2.4.3-rc1"
+        command: ["temporal", "-config", "", "-debug"]
         args: ["api"]
         envFrom: 
         - configMapRef:
@@ -84,9 +84,12 @@ spec:
 
 
       - name: krab
-        image: "docker.io/rtradetech/temporal:2.4.0-rc1"
-        command: ["temporal", "-config", "/temporal/config.json", "--db.no_ssl"]     
+        image: "docker.io/rtradetech/temporal:v2.4.3-rc1"
+        command: ["temporal", "-config", "", "--db.no_ssl"]     
         args: ["krab"]
+        envFrom: 
+        - configMapRef:
+            name: temporal-config
         ports: 
           - name: ipfs
             protocol: TCP
@@ -104,9 +107,12 @@ spec:
 
 
       - name: queue-email-send
-        image: "docker.io/rtradetech/temporal:2.4.0-rc1"
-        command: ["temporal", "-config", "/temporal/config.json", "-db.no_ssl"]  
+        image: "docker.io/rtradetech/temporal:v2.4.3-rc1"
+        command: ["temporal", "-config", "", "-db.no_ssl"]  
         args: ["queue", "email-send"]
+        envFrom: 
+        - configMapRef:
+            name: temporal-config
         ports: 
           - name: ipfs
             protocol: TCP
@@ -123,9 +129,12 @@ spec:
               mountPath: "/temporal"
 
       - name: queue-ipfs-cluster
-        image: "docker.io/rtradetech/temporal:2.4.0-rc1" 
-        command: ["temporal", "-config", "/temporal/config.json", "-db.no_ssl"]
+        image: "docker.io/rtradetech/temporal:v2.4.3-rc1" 
+        command: ["temporal", "-config", "", "-db.no_ssl"]
         args: ["queue", "ipfs", "cluster"]
+        envFrom: 
+        - configMapRef:
+            name: temporal-config
         ports: 
           - name: ipfs
             protocol: TCP
@@ -143,9 +152,12 @@ spec:
 
 
       - name: queue-ipfs-ipns-entry
-        image: "docker.io/rtradetech/temporal:2.4.0-rc1" 
-        command: ["temporal", "-config", "/temporal/config.json", "-db.no_ssl"] 
+        image: "docker.io/rtradetech/temporal:v2.4.3-rc1" 
+        command: ["temporal", "-config", "", "-db.no_ssl"] 
         args: ["queue", "ipfs", "ipns-entry"]
+        envFrom: 
+        - configMapRef:
+            name: temporal-config
         ports: 
           - name: ipfs
             protocol: TCP
@@ -164,9 +176,12 @@ spec:
 
 
       - name: queue-ipfs-key-creation
-        image: "docker.io/rtradetech/temporal:2.4.0-rc1"
-        command: ["temporal", "-config", "/temporal/config.json", "-db.no_ssl"]  
+        image: "docker.io/rtradetech/temporal:v2.4.3-rc1"
+        command: ["temporal", "-config", "", "-db.no_ssl"]  
         args: ["queue", "ipfs", "key-creation"]
+        envFrom: 
+        - configMapRef:
+            name: temporal-config
         ports: 
           - name: ipfs
             protocol: TCP
@@ -184,9 +199,12 @@ spec:
 
 
       - name: queue-ipfs-pin
-        image: "docker.io/rtradetech/temporal:2.4.0-rc1"
-        command: ["temporal", "-config", "/temporal/config.json", "-db.no_ssl"]  
+        image: "docker.io/rtradetech/temporal:v2.4.3-rc1"
+        command: ["temporal", "-config", "", "-db.no_ssl"]  
         args: ["queue", "ipfs", "pin"]
+        envFrom: 
+        - configMapRef:
+            name: temporal-config
         ports: 
           - name: ipfs
             protocol: TCP
