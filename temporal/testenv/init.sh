@@ -15,9 +15,6 @@ echo "
 
 "
 
-echo "Init Temporal Config...."
-kubectl apply -f temporal.config 
-
 echo "Generating erlang cookie..."
 kubectl create secret generic rabbitmq-config --from-literal=erlang-cookie=c-is-for-cookie-thats-good-enough-for-me
 
