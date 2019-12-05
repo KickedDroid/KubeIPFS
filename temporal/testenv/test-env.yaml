@@ -61,9 +61,12 @@ spec:
       containers:
 
       - name: temporal
-        image: "docker.io/rtradetech/temporal:latest"
+        image: "docker.io/rtradetech/temporal:v2.4.0-rc1"
         command: ["temporal", "-config", "/temporal/config.json"]
         args: ["api"]
+        envFrom: 
+        - configMapRef:
+            name: temporal-config
         ports: 
           - name: ipfs
             protocol: TCP
@@ -81,7 +84,7 @@ spec:
 
 
       - name: krab
-        image: "docker.io/rtradetech/temporal:latest"
+        image: "docker.io/rtradetech/temporal:2.4.0-rc1"
         command: ["temporal", "-config", "/temporal/config.json", "--db.no_ssl"]     
         args: ["krab"]
         ports: 
@@ -101,7 +104,7 @@ spec:
 
 
       - name: queue-email-send
-        image: "docker.io/rtradetech/temporal:latest"
+        image: "docker.io/rtradetech/temporal:2.4.0-rc1"
         command: ["temporal", "-config", "/temporal/config.json", "-db.no_ssl"]  
         args: ["queue", "email-send"]
         ports: 
@@ -120,7 +123,7 @@ spec:
               mountPath: "/temporal"
 
       - name: queue-ipfs-cluster
-        image: "docker.io/rtradetech/temporal:latest" 
+        image: "docker.io/rtradetech/temporal:2.4.0-rc1" 
         command: ["temporal", "-config", "/temporal/config.json", "-db.no_ssl"]
         args: ["queue", "ipfs", "cluster"]
         ports: 
@@ -140,7 +143,7 @@ spec:
 
 
       - name: queue-ipfs-ipns-entry
-        image: "docker.io/rtradetech/temporal:latest" 
+        image: "docker.io/rtradetech/temporal:2.4.0-rc1" 
         command: ["temporal", "-config", "/temporal/config.json", "-db.no_ssl"] 
         args: ["queue", "ipfs", "ipns-entry"]
         ports: 
@@ -161,7 +164,7 @@ spec:
 
 
       - name: queue-ipfs-key-creation
-        image: "docker.io/rtradetech/temporal:latest"
+        image: "docker.io/rtradetech/temporal:2.4.0-rc1"
         command: ["temporal", "-config", "/temporal/config.json", "-db.no_ssl"]  
         args: ["queue", "ipfs", "key-creation"]
         ports: 
@@ -181,7 +184,7 @@ spec:
 
 
       - name: queue-ipfs-pin
-        image: "docker.io/rtradetech/temporal:latest"
+        image: "docker.io/rtradetech/temporal:2.4.0-rc1"
         command: ["temporal", "-config", "/temporal/config.json", "-db.no_ssl"]  
         args: ["queue", "ipfs", "pin"]
         ports: 
