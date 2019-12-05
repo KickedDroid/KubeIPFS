@@ -17,7 +17,22 @@ echo "Deploying IPFS Cluster"
 kubectl apply -f ipfs-cluster-deployment.yaml
 
 printf "Waiting for nodes to start....\n"
-sleep 30
+sleep 5
+while true; do
+    sleep 10
+    statuses=`kubectl get pods -l 'app=ipfs-cluster' -o jsonpath='{.items[*].status.phase}' | xargs -n1`
+    echo $statuses
+    all_running="yes"
+    for s in $statuses; do
+        if [[ "$s" != "Running" ]]; then
+            all_running="no"
+        fi
+    done
+    if [[ $all_running == "yes" ]]; then
+        break
+    fi
+done
+
 
 
 echo "PEERS"
