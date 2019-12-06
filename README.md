@@ -9,8 +9,17 @@
 `minikube dashboard`
 
 
-## Create Deployment
+## Deploy IPFS-Cluster
 
-``kubectl apply -f https://raw.githubusercontent.com/AIDXNZ/KubeIPFS/master/ipfs-cluster-deployment.yaml``
+In your terminal run the init script
 
+``sh init.sh``
 
+The output should look like this: 
+
+````
+NAME                            READY   STATUS    RESTARTS   AGE
+ipfs-cluster-6b58ccf766-2vp6g   2/2     Running   0          15s
+ipfs-cluster-6b58ccf766-5w7bh   2/2     Running   0          15s
+ipfs-cluster-6b58ccf766-xd878   2/2     Running   0          15s
+````
