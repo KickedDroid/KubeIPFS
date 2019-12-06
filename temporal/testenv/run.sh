@@ -3,7 +3,7 @@
 set -e
 
 echo "Init Temporal Config...."
-kubectl apply -f temporal.config 
+kubectl apply -f temporal-config.yaml 
 
 echo "Deploying Temporal...."
 kubectl apply -f test-env.yaml
@@ -30,6 +30,6 @@ done
 
 sleep 5
 
-kubectl get all 
+kubectl get pods
 
 set +ex
