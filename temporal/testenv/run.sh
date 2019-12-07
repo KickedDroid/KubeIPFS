@@ -2,8 +2,6 @@
 
 set -e
 
-echo "Init Temporal Config...."
-kubectl apply -f temporal-config.yaml 
 
 echo "Deploying Temporal...."
 kubectl apply -f test-env.yaml
