@@ -25,9 +25,9 @@ sleep 1
 echo "Deploying postgres...."
 kubectl apply -f postgres.yaml
 
+kubectl apply -f temporal-config.yaml
 
 kubectl get services
-
 
 
 set +ex
