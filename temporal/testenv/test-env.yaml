@@ -1,4 +1,16 @@
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: workdir
+spec:
+  accessModes: 
+    - ReadWriteOnce
+  storageClassName: standard
+  resources:
+    requests:
+      storage: 1Gi # make this bigger in production
 
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -261,15 +273,3 @@ spec:
         volumeMounts:
         - name: workdir
           mountPath: /var/lib/rabbitmq
----
-kind: PersistentVolumeClaim
-apiVersion: v1
-metadata:
-  name: workdir
-spec:
-  accessModes: 
-    - ReadWriteOnce
-  storageClassName: standard
-  resources:
-    requests:
-      storage: 1Gi # make this bigger in production
