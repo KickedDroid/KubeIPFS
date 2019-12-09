@@ -24,7 +24,6 @@ while true; do
     fi
 done
 
-kubectl expose deployment temporal --type=LoadBalancer --name=temporal-service
 
 sleep 5
 
