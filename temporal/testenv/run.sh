@@ -25,8 +25,5 @@ while true; do
 done
 
 
-sleep 5
-
-kubectl get services
 
 set +ex

@@ -45,10 +45,12 @@ spec:
         - configMapRef:
             name: temporal-config
         ports: 
+          - name: api
+            containerPort: 6767
           - name: ipfs
             protocol: TCP
             containerPort: 5001
-          - name: "api"
+          - name: "cluster"
             protocol: "TCP"
             containerPort: 9094 
           - name: db
