@@ -22,38 +22,17 @@ spec:
       - name: workdir
       persistentVolumeClaim: 
         claimName: workdir
-    
-      initContainers: 
-        - name: config
-          image: busybox
-          command: 
-          - wget
-          - "-O"
-          - "/temporal/config.json"
-          - https://raw.githubusercontent.com/AIDXNZ/KubeIPFS/master/config.json
-          command: 
-          - wget
-          - "-O"
-          - "/temporal/certs/api.cert"
-          - https://raw.githubusercontent.com/RTradeLtd/testenv/45aa59073e7f85da6604334547f7f1c3e7e2ef9d/certs/api.cert
-          command: 
-          - wget
-          - "-O"
-          - "/temporal/certs/api.key"
-          - https://raw.githubusercontent.com/RTradeLtd/testenv/45aa59073e7f85da6604334547f7f1c3e7e2ef9d/certs/api.key
-          volumeMounts:
-            - name: workdir
-              mountPath: "/temporal"
-    
       containers:
-
       - name: temporal
         image: "docker.io/rtradetech/temporal:latest"
+        command: ["temporal", "-config", "", "-debug"]
         ports: 
+          - name: api
+            containerPort: 6767
           - name: ipfs
             protocol: TCP
             containerPort: 5001
-          - name: "api"
+          - name: clusterapi
             protocol: "TCP"
             containerPort: 9094 
           - name: db
