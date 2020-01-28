@@ -13,8 +13,13 @@ echo "  _  ___    _ ____  ______   _____ _____  ______ _____
 
 "
 
-echo "Deploying IPFS Cluster"
+
+kubectl apply -f ipfs-cluster-config.yaml
+echo "Applying config.."
+
 kubectl apply -f ipfs-cluster-deployment.yaml
+
+echo "Deploying IPFS Cluster"
 
 printf "Waiting for nodes to start....\n"
 sleep 5
