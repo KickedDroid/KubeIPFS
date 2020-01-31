@@ -50,3 +50,14 @@ IPFS-Cluster Peers and addresses
     - /ip4/127.0.0.1/tcp/4001/p2p/QmcjkgYcPYTVxx6HdBHigsXgSRso61nAJWJeimddG8HbZD
     - /ip4/172.17.0.8/tcp/4001/p2p/QmcjkgYcPYTVxx6HdBHigsXgSRso61nAJWJeimddG8HbZD
 ````
+
+## Some useful commands
+
+Get pod name to be executed 
+``POD=$(kubectl get pod -l app=ipfs-cluster -o jsonpath="{.items[0].metadata.name}")``
+
+Get Cluster Peers
+``kubectl exec $POD ipfs-cluster-ctl peers ls``
+
+List pined objects
+``kubectl exec $POD ipfs-cluster-ctl pin ls``
