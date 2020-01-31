@@ -15,7 +15,8 @@ In your terminal run the init script
 
 ``sh init.sh``
 
-The output should look like this: 
+
+### The terminal should output this: 
 
 The pods in the cluster
 ````
