@@ -53,11 +53,14 @@ IPFS-Cluster Peers and addresses
 
 ## Some useful commands
 
-Get pod name to be executed 
+Get pod name to be executed  
+
 ``POD=$(kubectl get pod -l app=ipfs-cluster -o jsonpath="{.items[0].metadata.name}")``
 
 Get Cluster Peers
+
 ``kubectl exec $POD ipfs-cluster-ctl peers ls``
 
 List pined objects
+
 ``kubectl exec $POD ipfs-cluster-ctl pin ls``
