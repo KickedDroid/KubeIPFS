@@ -11,7 +11,7 @@ spec:
       storage: 1Gi # make this bigger in production
 ---
 apiVersion: apps/v1
-kind: Deployment
+kind: StatefulSet
 metadata:
   name: ipfs-cluster
   labels:
