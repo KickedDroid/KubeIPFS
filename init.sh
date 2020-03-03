@@ -12,13 +12,14 @@ echo "  _  ___    _ ____  ______   _____ _____  ______ _____
                                                        
 
 "
-
+linkerd install | kubectl apply -f -
+echo "Applying service mesh.."
+linkerd check
 
 kubectl apply -f ipfs-cluster-config.yaml
 echo "Applying config.."
 
-kubectl apply -f ipfs-cluster-deployment.yaml
-
+cat ipfs-cluster-deployment.yaml | linkerd inject - | kubectl apply -f -
 echo "Deploying IPFS Cluster"
 
 printf "Waiting for nodes to start....\n"

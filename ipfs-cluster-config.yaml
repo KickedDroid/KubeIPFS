@@ -1,4 +1,12 @@
 apiVersion: v1
+kind: Secret
+metadata:
+  name: secret-config
+type: Opaque
+data:
+  cluster-secret: ""
+---
+apiVersion: v1
 kind: ConfigMap
 metadata:
   name: ipfs-cluster-config
@@ -7,7 +15,6 @@ data:
   
   # Cluster config 
   CLUSTER_PEERNAME: "cluster"
-  CLUSTER_SECRET: ""
   CLUSTER_LEAVEONSHUTDOWN: "false"
   CLUSTER_LISTENMULTIADDRESS: "/ip4/0.0.0.0/tcp/9096"
 

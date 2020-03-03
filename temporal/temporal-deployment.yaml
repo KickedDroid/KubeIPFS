@@ -1,5 +1,25 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: temporal
+
+---
+  apiVersion: v1
+  kind: Service
+  metadata:
+    name: temporal-api-service
+    labels:
+      app: temporal
+  spec:
+    ports:
+    - port: 6767
+      name: api
+    selector:
+      app: temporal
+      
+---
 apiVersion: apps/v1
-kind: Deployment
+kind: StatefulSet
 metadata:
   name: temporal
   labels:

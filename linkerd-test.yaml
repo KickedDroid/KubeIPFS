@@ -1,0 +1,114 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: ipfs-service
+  labels:
+    app: ipfs-node
+spec:
+  ports:
+  - port: 5001
+    name: api
+  selector:
+    app: ipfs-node
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: ipfs-cluster-service
+  labels:
+    app: ipfs-cluster
+spec:
+  ports:
+  - port: 9095
+    name: api
+  selector:
+    app: ipfs-cluster
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: ipfs-node
+  labels:
+    name: ipfs-node
+spec:
+  replicas: 3
+  selector:
+    matchLabels: 
+      app: ipfs-node
+  template:
+    metadata:
+      labels:
+        app: ipfs-node
+        role: peer
+    spec:
+
+      volumes:
+      - name: workdir
+        persistentVolumeClaim:
+          claimName: workdir
+
+      containers:
+      - name: go-ipfs
+        image: "ipfs/go-ipfs"
+        ports:
+            - name: swarm
+              protocol: TCP
+              containerPort: 4001
+            - name: swarm-udp
+              protocol: UDP
+              containerPort: 4002
+            - name: ipfs-daemon-api
+              protocol: TCP
+              containerPort: 5001
+            - name: ws
+              protocol: TCP
+              containerPort: 8081
+            - name: http
+              protocol: TCP
+              containerPort: 8080
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: ipfs-cluster
+  labels:
+    name: ipfs-cluster
+spec:
+  replicas: 3
+  selector:
+    matchLabels: 
+      app: ipfs-cluster
+  template:
+    metadata:
+      labels:
+        app: ipfs-cluster
+        role: peer
+    spec:
+
+      volumes:
+      - name: workdir
+        persistentVolumeClaim:
+          claimName: workdir
+
+      containers:
+      - name: ipfs-cluster
+        image: "docker.io/ipfs/ipfs-cluster:latest"
+        env:
+        - name: IPFS_API_CONNECTION_HOST
+          value: ipfs-service.ipfs
+        ports:
+        - containerPort: 4001
+          name: "swarm"
+          protocol: "TCP"
+        - containerPort: 5001
+          name: "api"
+          protocol: "TCP"
+        - containerPort: 9094
+          name: "clusterapi"
+          protocol: "TCP"
+        - containerPort: 9095
+          name: "clusterproxy"
+          protocol: "TCP"
+        - containerPort: 9096
+          name: "cluster"
+          protocol: "TCP"
