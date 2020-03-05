@@ -17,13 +17,17 @@ echo "
 
 echo "Inititalizing prerequisites....."
 
+linkerd install | kubectl apply -f -
+echo "Applying service mesh.."
+linkerd check
+
 echo "Generating erlang cookie..."
 kubectl create secret generic rabbitmq-config --from-literal=erlang-cookie=c-is-for-cookie-thats-good-enough-for-me
 
 sleep 1
 
 echo "Deploying postgres...."
-kubectl apply -f postgres.yaml
+cat postgres.yaml | linkerd inject - | kubectl apply -f -
 
 kubectl apply -f temporal-config.yaml
 

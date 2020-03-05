@@ -24,7 +24,7 @@ data:
   
   # database config
   DATABASE_NAME: "temporal"
-  DATABASE_URL:  "0.0.0.0"
+  DATABASE_URL:  "postgres.temporal"
   DATABASE_PORT: "5432"
   DATABASE_USERNAME: "postgres"
   DATABASE_PASSWORD: "password123"

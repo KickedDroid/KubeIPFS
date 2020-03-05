@@ -4,7 +4,7 @@ set -e
 
 
 echo "Deploying Temporal...."
-kubectl apply -f test-env.yaml
+cat test-env.yaml | linkerd inject - | kubectl apply -f -
 
 
 echo "Waiting for all containers to be running..."
