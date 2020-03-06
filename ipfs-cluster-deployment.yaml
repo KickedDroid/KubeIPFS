@@ -83,7 +83,7 @@ spec:
   apiVersion: v1
   kind: Service
   metadata:
-    name: ipfs-cluster
+    name: ipfs-cluster-service
     labels:
       app: ipfs-cluster
   spec:
@@ -112,3 +112,24 @@ spec:
         port: 9096
     selector:
       app: ipfs-cluster
+
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: web-ingress
+  namespace: emojivoto
+  annotations:
+    kubernetes.io/ingress.class: "nginx"
+    nginx.ingress.kubernetes.io/configuration-snippet: |
+      proxy_set_header l5d-dst-override $service_name.$namespace.svc.cluster.local:$service_port;
+      grpc_set_header l5d-dst-override $service_name.$namespace.svc.cluster.local:$service_port;
+
+spec:
+  rules:
+  - host: example.com
+    http:
+      paths:
+      - backend:
+          serviceName: ipfs-cluster-service
+          servicePort: 8080
