@@ -275,3 +275,17 @@ spec:
         volumeMounts:
         - name: workdir
           mountPath: /var/lib/rabbitmq
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: temporal-api-service
+  labels:
+    app: temporal
+spec:
+  ports:
+  - port: 6767
+    name: api
+  selector:
+    app: temporal
