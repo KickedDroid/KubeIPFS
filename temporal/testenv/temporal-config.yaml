@@ -31,16 +31,16 @@ data:
 
 
   # IPFS config
-  IPFS_API_CONNECTION_HOST: "127.0.0.1"
+  IPFS_API_CONNECTION_HOST: "ipfs-cluster-service.default"
   IPFS_API_CONNECTION_PORT: "5001"
   IPFS_KEYSTORE_PATH: "/tmp"
 
   # IPFS Cluster config
-  IPFS_CLUSTER_API_CONNECTION_HOST: "127.0.0.1"
+  IPFS_CLUSTER_API_CONNECTION_HOST: "ipfs-cluster-service.default"
   IPFS_CLUSTER_API_CONNECTION_PORT: "9094"
     
   #rabbitmq config
-  RABBITMQ_URL: "amqp://127.0.0.1:5672/" 
+  RABBITMQ_URL: "amqp://rabbitmq.default:5672/" 
 
   # KRAB CONFIG
   KRAB_URL: "127.0.0.1:10000"

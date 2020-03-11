@@ -18,6 +18,7 @@ metadata:
   labels:
     name: temporal
 spec:
+  serviceName: "temporal-api-service"
   replicas: 1
   selector:
     matchLabels: 
@@ -38,7 +39,7 @@ spec:
       containers:
 
       - name: temporal
-        image: "docker.io/rtradetech/temporal:v2.4.3-rc1"
+        image: "docker.io/rtradetech/temporal:v2.6.3"
         command: ["temporal", "-config", "", "-debug"]
         args: ["api"]
         envFrom: 
@@ -63,7 +64,7 @@ spec:
 
 
       - name: krab
-        image: "docker.io/rtradetech/temporal:v2.4.3-rc1"
+        image: "docker.io/rtradetech/temporal:v2.6.3"
         command: ["temporal", "-config", "", "--db.no_ssl"]     
         args: ["krab"]
         envFrom: 
@@ -86,7 +87,7 @@ spec:
 
 
       - name: queue-email-send
-        image: "docker.io/rtradetech/temporal:v2.4.3-rc1"
+        image: "docker.io/rtradetech/temporal:v2.6.3"
         command: ["temporal", "-config", "", "-db.no_ssl"]  
         args: ["queue", "email-send"]
         envFrom: 
@@ -108,7 +109,7 @@ spec:
               mountPath: "/temporal"
 
       - name: queue-ipfs-cluster
-        image: "docker.io/rtradetech/temporal:v2.4.3-rc1" 
+        image: "docker.io/rtradetech/temporal:v2.6.3" 
         command: ["temporal", "-config", "", "-db.no_ssl"]
         args: ["queue", "ipfs", "cluster"]
         envFrom: 
@@ -131,7 +132,7 @@ spec:
 
 
       - name: queue-ipfs-ipns-entry
-        image: "docker.io/rtradetech/temporal:v2.4.3-rc1" 
+        image: "docker.io/rtradetech/temporal:v2.6.3" 
         command: ["temporal", "-config", "", "-db.no_ssl"] 
         args: ["queue", "ipfs", "ipns-entry"]
         envFrom: 
@@ -155,7 +156,7 @@ spec:
 
 
       - name: queue-ipfs-key-creation
-        image: "docker.io/rtradetech/temporal:v2.4.3-rc1"
+        image: "docker.io/rtradetech/temporal:v2.6.3"
         command: ["temporal", "-config", "", "-db.no_ssl"]  
         args: ["queue", "ipfs", "key-creation"]
         envFrom: 
@@ -178,7 +179,7 @@ spec:
 
 
       - name: queue-ipfs-pin
-        image: "docker.io/rtradetech/temporal:v2.4.3-rc1"
+        image: "docker.io/rtradetech/temporal:v2.6.3"
         command: ["temporal", "-config", "", "-db.no_ssl"]  
         args: ["queue", "ipfs", "pin"]
         envFrom: 
@@ -198,84 +199,6 @@ spec:
         volumeMounts:
             - name: workdir
               mountPath: "/temporal"
-
-
-      - name: go-ipfs
-        image: "ipfs/go-ipfs"
-        ports:
-            - name: swarm
-              protocol: TCP
-              containerPort: 4001
-            - name: swarm-udp
-              protocol: UDP
-              containerPort: 4002
-            - name: api
-              protocol: TCP
-              containerPort: 5001
-            - name: ws
-              protocol: TCP
-              containerPort: 8081
-            - name: http
-              protocol: TCP
-              containerPort: 8080
-
-
-      - name: ipfs-cluster
-        image: "docker.io/ipfs/ipfs-cluster:latest"
-        env: 
-        - name: CLUSTER_SECRET
-          value: "9d171041f5ffd244316307e2141a6890dbf5fb4c00dfb38fd61721b88a4adf87"
-        ports:
-        - containerPort: 4001
-          name: "swarm"
-          protocol: "TCP"
-        - containerPort: 5001
-          name: "api"
-          protocol: "TCP"
-        - containerPort: 9094
-          name: "clusterapi"
-          protocol: "TCP"
-        - containerPort: 9095
-          name: "clusterproxy"
-          protocol: "TCP"
-        - containerPort: 9096
-          name: "cluster"
-          protocol: "TCP"
-
-      - name: rabbitmq
-        image: rabbitmq:3.6.6-management-alpine
-        lifecycle:
-          postStart:
-            exec:
-              command:
-              - /bin/sh
-              - -c
-              - >
-                if [ -z "$(grep rabbitmq /etc/resolv.conf)" ]; then
-                  sed "s/^search \([^ ]\+\)/search rabbitmq.\1 \1/" /etc/resolv.conf > /etc/resolv.conf.new;
-                  cat /etc/resolv.conf.new > /etc/resolv.conf;
-                  rm /etc/resolv.conf.new;
-                fi;
-                until rabbitmqctl node_health_check; do sleep 1; done;
-                if [[ "$HOSTNAME" != "rabbitmq-0" && -z "$(rabbitmqctl cluster_status | grep rabbitmq-0)" ]]; then
-                  rabbitmqctl stop_app;
-                  rabbitmqctl join_cluster rabbit@rabbitmq-0;
-                  rabbitmqctl start_app;
-                fi;
-                rabbitmqctl set_policy ha-all "." '{"ha-mode":"exactly","ha-params":3,"ha-sync-mode":"automatic"}'
-        env:
-        - name: RABBITMQ_ERLANG_COOKIE
-          valueFrom:
-            secretKeyRef:
-              name: rabbitmq-config
-              key: erlang-cookie
-        ports:
-        - containerPort: 5672
-          name: amqp
-        volumeMounts:
-        - name: workdir
-          mountPath: /var/lib/rabbitmq
-
 ---
 apiVersion: v1
 kind: Service
@@ -289,3 +212,24 @@ spec:
     name: api
   selector:
     app: temporal
+
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: temporal-ingress
+  namespace: default
+  annotations:
+    kubernetes.io/ingress.class: "nginx"
+    nginx.ingress.kubernetes.io/configuration-snippet: |
+      proxy_set_header l5d-dst-override $service_name.$namespace.svc.cluster.local:$service_port;
+      grpc_set_header l5d-dst-override $service_name.$namespace.svc.cluster.local:$service_port;
+
+spec:
+  rules:
+  - host: example.com
+    http:
+      paths:
+      - backend:
+          serviceName: temporal-api-service
+          servicePort: 6767

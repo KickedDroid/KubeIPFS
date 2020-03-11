@@ -26,12 +26,16 @@ kubectl create secret generic rabbitmq-config --from-literal=erlang-cookie=c-is-
 
 sleep 1
 
+cat rabbitmq.yaml | linkerd inject - | kubectl apply -f -
+
 echo "Deploying postgres...."
 cat postgres.yaml | linkerd inject - | kubectl apply -f -
 
 kubectl apply -f temporal-config.yaml
 
 kubectl get services 
+
+cat ipfs-cluster.yaml | linkerd inject - | kubectl apply -f -
 
 sleep 10 
 echo "Deploying Temporal...."
