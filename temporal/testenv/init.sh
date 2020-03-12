@@ -17,32 +17,50 @@ echo "
 
 echo "Inititalizing prerequisites....."
 
+helm init 
+
 linkerd install | kubectl apply -f -
 echo "Applying service mesh.."
 linkerd check
+
+kubectl apply -f ipfs-cluster-config.yaml
 
 echo "Generating erlang cookie..."
 kubectl create secret generic rabbitmq-config --from-literal=erlang-cookie=c-is-for-cookie-thats-good-enough-for-me
 
 sleep 1
 
-cat rabbitmq.yaml | linkerd inject - | kubectl apply -f -
+helm install stable/rabbitmq-ha
 
 echo "Deploying postgres...."
 cat postgres.yaml | linkerd inject - | kubectl apply -f -
 
 kubectl apply -f temporal-config.yaml
 
-kubectl get services 
-
 cat ipfs-cluster.yaml | linkerd inject - | kubectl apply -f -
 
 sleep 10 
-echo "Deploying Temporal...."
-cat test-env.yaml | linkerd inject - | kubectl apply -f -
 
 
 echo "Waiting for all containers to be running..."
+
+while true; do
+    sleep 10
+    statuses=`kubectl get pods -l 'app=ipfs-cluster' -o jsonpath='{.items[*].status.phase}' | xargs -n1`
+    echo $statuses
+    all_running="yes"
+    for s in $statuses; do
+        if [[ "$s" != "Running" ]]; then
+            all_running="no"
+        fi
+    done
+    if [[ $all_running == "yes" ]]; then
+        break
+    fi
+done
+
+echo "Deploying Temporal...."
+cat test-env.yaml | linkerd inject - | kubectl apply -f -
 
 while true; do
     sleep 10

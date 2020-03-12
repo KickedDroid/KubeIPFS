@@ -17,6 +17,7 @@ metadata:
   labels:
     name: ipfs-cluster
 spec:
+  serviceName: "ipfs-cluster-service"
   replicas: 3
   selector:
     matchLabels: 

@@ -1,0 +1,47 @@
+apiVersion: v1
+kind: Secret
+metadata:
+  name: secret-config
+type: Opaque
+data:
+  cluster-secret: ""
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: ipfs-cluster-config
+  namespace: default
+data:
+  
+  # Cluster config 
+  CLUSTER_PEERNAME: "cluster"
+  CLUSTER_LEAVEONSHUTDOWN: "false"
+  CLUSTER_LISTENMULTIADDRESS: "/ip4/0.0.0.0/tcp/9096"
+
+  # Replication factors  -1 == all
+  # CLUSTER_REPLICATIONFACTORMIN: "1"
+  CLUSTER_REPLICATIONFACTORMAX: "-1"
+
+  # IPFS Proxy 
+  API_IPFSPROXY_LISTENMULTIADDRESS: "/ip4/127.0.0.1/tcp/9095"
+  API_IPFSPROXY_NODEMULTIADDRESS: "/ip4/127.0.0.1/tcp/5001"
+  
+  # Rest API 
+  API_RESTAPI_HTTPLISTENMULTIADDRESS: "/ip4/127.0.0.1/tcp/9094"
+  
+
+  # IPFS Connector
+  IPFSCONNECTOR_IPFSHTTP_NODEMULTIADDRESS: "/ip4/127.0.0.1/tcp/5001"
+
+  # Observations 
+  #OBSERVATIONS_METRICS_ENABLESTATS: true
+  #OBSERVATIONS_METRICS_PROMETHEUSENDPOINT: "/ip4/0.0.0.0/tcp/8888"
+
+  # IPFS config
+  IPFS_API_CONNECTION_HOST: "127.0.0.1"
+  IPFS_API_CONNECTION_PORT: "5001"
+  IPFS_KEYSTORE_PATH: "/tmp"
+
+  # IPFS Cluster config
+  IPFS_CLUSTER_API_CONNECTION_HOST: "127.0.0.1"
+  IPFS_CLUSTER_API_CONNECTION_PORT: "9094"
