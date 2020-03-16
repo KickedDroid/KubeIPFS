@@ -1,0 +1,84 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: s3x-headless
+  labels:
+    app: s3x
+spec:
+  publishNotReadyAddresses: true
+  clusterIP: None
+  ports:
+    - port: 9000
+      name: minio
+  selector:
+    app: s3x
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  # This name uniquely identifies the StatefulSet
+  name: s3x
+spec:
+  serviceName: s3x-service
+  podManagementPolicy: Parallel
+  replicas: 1
+  selector:
+    matchLabels:
+      app: s3x # has to match .spec.template.metadata.labels
+  template:
+    metadata:
+      labels:
+        app: s3x # has to match .spec.selector.matchLabels
+    spec:
+      containers:
+      - name: s3x
+        env:
+        - name: MINIO_ACCESS_KEY
+          value: "minio"
+        - name: MINIO_SECRET_KEY
+          value: "minio123"
+        image: "docker.io/rtradetech/s3x:latest"
+        args:
+        - gateway
+        - s3x 
+        ports:
+        - containerPort: 9000
+        # These volume mounts are persistent. Each pod in the PetSet
+        # gets a volume mounted based on this field.
+        volumeMounts:
+        - name: data
+          mountPath: /data
+        # Readiness probe detects situations where MinIO server instance
+        # is not ready to accept connections. Kubernetes automatically
+        # stops all the traffic to the pods if readiness checks fail.
+        readinessProbe:
+          httpGet:
+            path: /minio/health/ready
+            port: 9000
+          initialDelaySeconds: 120
+          periodSeconds: 20
+  # These are converted to volume claims by the controller
+  # and mounted at the paths mentioned above.
+  volumeClaimTemplates:
+  - metadata:
+      name: data
+    spec:
+      accessModes:
+        - ReadWriteOnce
+      resources:
+        requests:
+          storage: 10Gi
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: s3x-service
+spec:
+  type: LoadBalancer
+  ports:
+    - port: 9000
+      targetPort: 9000
+      protocol: TCP
+  selector:
+    app: s3x
