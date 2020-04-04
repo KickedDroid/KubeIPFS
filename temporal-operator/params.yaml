@@ -1,0 +1,48 @@
+apiVersion: kudo.dev/v1beta1
+parameters:
+  - name: replicas
+    description: Number of replicas that should be run as part of the deployment
+    default: 2
+
+  - name: CLUSTER_PEERNAME
+    description: "A human name for this peer."
+    default: "cluster"
+
+  - name: CLUSTER_LEAVEONSHUTDOWN
+    default: "false"
+    description: "The peer will remove itself from the cluster peerset on shutdown."   
+
+  - name: CLUSTER_LISTENMULTIADDRESS
+    default: "/ip4/0.0.0.0/tcp/9096"
+    description: "The peers Cluster-RPC listening endpoints."
+
+  - name: CLUSTER_REPLICATIONFACTORMAX
+    default: "-1"
+    description: "Specifies the default maximum number of peers that should be pinning an item. -1 == all"
+
+  - name: API_IPFSPROXY_LISTENMULTIADDRESS
+    default: "/ip4/127.0.0.1/tcp/9095"
+
+  - name: API_IPFSPROXY_NODEMULTIADDRESS
+    default: "/ip4/127.0.0.1/tcp/5001"  
+
+  - name: API_RESTAPI_HTTPLISTENMULTIADDRESS
+    default: "/ip4/127.0.0.1/tcp/9094"
+    
+  - name: IPFSCONNECTOR_IPFSHTTP_NODEMULTIADDRESS
+    default: "/ip4/127.0.0.1/tcp/5001"  
+
+  - name: IPFS_API_CONNECTION_HOST
+    default: "127.0.0.1"
+    
+  - name: IPFS_API_CONNECTION_PORT
+    default: "5001" 
+
+  - name: IPFS_KEYSTORE_PATH  
+    default: "/tmp"
+
+  - name: IPFS_CLUSTER_API_CONNECTION_HOST
+    default: "127.0.0.1"
+
+  - name: IPFS_CLUSTER_API_CONNECTION_PORT
+    default: "9094"  

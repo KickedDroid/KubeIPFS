@@ -1,0 +1,187 @@
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: workdir
+spec:
+  accessModes: 
+    - ReadWriteOnce
+  storageClassName: standard
+  resources:
+    requests:
+      storage: 1Gi # make this bigger in production
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: ipfs-cluster
+  labels:
+    name: ipfs-cluster
+spec:
+  serviceName: "ipfs-cluster-service"
+  replicas: {{ .Params.replicas }}
+  selector:
+    matchLabels: 
+      app: ipfs-cluster
+  template:
+    metadata:
+      labels:
+        app: ipfs-cluster
+        role: peer
+    spec:
+
+      volumes:
+      - name: workdir
+        persistentVolumeClaim:
+          claimName: workdir
+
+      containers:
+      - name: ipfs-cluster
+        image: "docker.io/ipfs/ipfs-cluster:latest"
+        env: 
+        - name: CLUSTER_PEERNAME
+          value: {{ .Params.CLUSTER_PEERNAME }}
+        - name: CLUSTER_LEAVEONSHUTDOWN
+          value: {{ .Params.CLUSTER_LEAVEONSHUTDOWN }}
+        - name: CLUSTER_LISTENMULTIADDRESS
+          value: {{ .Params.CLUSTER_LISTENMULTIADDRESS }}
+        - name: CLUSTER_REPLICATIONFACTORMAX
+          value: {{ .Params.CLUSTER_REPLICATIONFACTORMAX }}
+        - name: API_IPFSPROXY_LISTENMULTIADDRESS
+          value: {{ .Params.API_IPFSPROXY_LISTENMULTIADDRESS }}
+        - name: API_IPFSPROXY_NODEMULTIADDRESS
+          value: {{ .Params.API_IPFSPROXY_NODEMULTIADDRESS }}
+        - name: API_RESTAPI_HTTPLISTENMULTIADDRESS
+          value: {{ .Params.API_RESTAPI_HTTPLISTENMULTIADDRESS }}
+        - name: IPFSCONNECTOR_IPFSHTTP_NODEMULTIADDRESS
+          value: {{ .Params.IPFSCONNECTOR_IPFSHTTP_NODEMULTIADDRESS }}
+        - name: IPFS_API_CONNECTION_HOST
+          value: {{ .Params.IPFS_API_CONNECTION_HOST }}
+        - name: IPFS_API_CONNECTION_PORT
+          value: {{ .Params.IPFS_API_CONNECTION_PORT }}
+        - name: IPFS_KEYSTORE_PATH
+          value: {{ .Params.IPFS_KEYSTORE_PATH }}
+        - name: IPFS_CLUSTER_API_CONNECTION_HOST
+          value: {{ .Params.IPFS_CLUSTER_API_CONNECTION_HOST }}
+        - name: IPFS_CLUSTER_API_CONNECTION_PORT
+          value: {{ .Params.IPFS_CLUSTER_API_CONNECTION_PORT }}
+
+        ports:
+        - containerPort: 4001
+          name: "swarm"
+          protocol: "TCP"
+        - containerPort: 5001
+          name: "api"
+          protocol: "TCP"
+        - containerPort: 9094
+          name: "clusterapi"
+          protocol: "TCP"
+        - containerPort: 9095
+          name: "clusterproxy"
+          protocol: "TCP"
+        - containerPort: 9096
+          name: "cluster"
+          protocol: "TCP"
+      - name: go-ipfs
+        image: "ipfs/go-ipfs"
+        env: 
+          - name: CLUSTER_PEERNAME
+            value: {{ .Params.CLUSTER_PEERNAME }}
+          - name: CLUSTER_LEAVEONSHUTDOWN
+            value: {{ .Params.CLUSTER_LEAVEONSHUTDOWN }}
+          - name: CLUSTER_LISTENMULTIADDRESS
+            value: {{ .Params.CLUSTER_LISTENMULTIADDRESS }}
+          - name: CLUSTER_REPLICATIONFACTORMAX
+            value: {{ .Params.CLUSTER_REPLICATIONFACTORMAX }}
+          - name: API_IPFSPROXY_LISTENMULTIADDRESS
+            value: {{ .Params.API_IPFSPROXY_LISTENMULTIADDRESS }}
+          - name: API_IPFSPROXY_NODEMULTIADDRESS
+            value: {{ .Params.API_IPFSPROXY_NODEMULTIADDRESS }}
+          - name: API_RESTAPI_HTTPLISTENMULTIADDRESS
+            value: {{ .Params.API_RESTAPI_HTTPLISTENMULTIADDRESS }}
+          - name: IPFSCONNECTOR_IPFSHTTP_NODEMULTIADDRESS
+            value: {{ .Params.IPFSCONNECTOR_IPFSHTTP_NODEMULTIADDRESS }}
+          - name: IPFS_API_CONNECTION_HOST
+            value: {{ .Params.IPFS_API_CONNECTION_HOST }}
+          - name: IPFS_API_CONNECTION_PORT
+            value: {{ .Params.IPFS_API_CONNECTION_PORT }}
+          - name: IPFS_KEYSTORE_PATH
+            value: {{ .Params.IPFS_KEYSTORE_PATH }}
+          - name: IPFS_CLUSTER_API_CONNECTION_HOST
+            value: {{ .Params.IPFS_CLUSTER_API_CONNECTION_HOST }}
+          - name: IPFS_CLUSTER_API_CONNECTION_PORT
+            value: {{ .Params.IPFS_CLUSTER_API_CONNECTION_PORT }}
+        ports:
+            - name: swarm
+              protocol: TCP
+              containerPort: 4001
+            - name: swarm-udp
+              protocol: UDP
+              containerPort: 4002
+            - name: ipfs-daemon-api
+              protocol: TCP
+              containerPort: 5001
+            - name: ws
+              protocol: TCP
+              containerPort: 8081
+            - name: http
+              protocol: TCP
+              containerPort: 8080
+        resources:
+          requests:
+            cpu: 100m
+---
+  apiVersion: v1
+  kind: Service
+  metadata:
+    name: ipfs-cluster-service
+    labels:
+      app: ipfs-cluster
+  spec:
+    type: LoadBalancer
+    ports:
+      - name: ipfs-daemon-api
+        port: 5001
+      - name: swarm
+        targetPort: swarm
+        port: 4001
+      - name: swarm-udp
+        targetPort: swarm-udp
+        port: 4002
+      - name: ws
+        targetPort: ws
+        port: 8081
+      - name: http
+        targetPort: http
+        port: 8080
+      - name: api-http
+        targetPort: api-http
+        port: 9094
+      - name: proxy-http
+        targetPort: proxy-http
+        port: 9095
+      - name: cluster-swarm
+        targetPort: cluster-swarm
+        port: 9096
+    selector:
+      app: ipfs-cluster
+
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: ipfs-ingress
+  namespace: default
+  annotations:
+    kubernetes.io/ingress.class: "nginx"
+    nginx.ingress.kubernetes.io/configuration-snippet: |
+      proxy_set_header l5d-dst-override $service_name.$namespace.svc.cluster.local:$service_port;
+      grpc_set_header l5d-dst-override $service_name.$namespace.svc.cluster.local:$service_port;
+
+spec:
+  rules:
+  - host: example.com
+    http:
+      paths:
+      - backend:
+          serviceName: ipfs-cluster-service
+          servicePort: 8080
