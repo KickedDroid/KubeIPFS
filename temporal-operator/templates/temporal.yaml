@@ -1,0 +1,235 @@
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: workdir
+spec:
+  accessModes: 
+    - ReadWriteOnce
+  storageClassName: standard
+  resources:
+    requests:
+      storage: 1Gi # make this bigger in production
+
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: temporal
+  labels:
+    name: temporal
+spec:
+  serviceName: "temporal-api-service"
+  replicas: 1
+  selector:
+    matchLabels: 
+      app: temporal
+  template:
+    metadata:
+      labels:
+        app: temporal
+        role: node
+
+    spec:
+
+      volumes: 
+      - name: workdir
+        persistentVolumeClaim: 
+          claimName: workdir
+          
+      containers:
+
+      - name: temporal
+        image: "docker.io/rtradetech/temporal:v2.6.3"
+        command: ["temporal", "-config", "", "-debug"]
+        args: ["api"]
+        envFrom: 
+        - configMapRef:
+            name: temporal-config
+        ports: 
+          - name: api
+            containerPort: 6767
+          - name: ipfs
+            protocol: TCP
+            containerPort: 5001
+          - name: "cluster"
+            protocol: "TCP"
+            containerPort: 9094 
+          - name: db
+            containerPort: 5432
+          - name: rabbitmq 
+            containerPort: 5672
+        volumeMounts:
+            - name: workdir
+              mountPath: "/temporal"
+
+
+      - name: krab
+        image: "docker.io/rtradetech/temporal:v2.6.3"
+        command: ["temporal", "-config", "", "--db.no_ssl"]     
+        args: ["krab"]
+        envFrom: 
+        - configMapRef:
+            name: temporal-config
+        ports: 
+          - name: ipfs
+            protocol: TCP
+            containerPort: 5001
+          - name: "api"
+            protocol: "TCP"
+            containerPort: 9094 
+          - name: db
+            containerPort: 5432
+          - name: rabbitmq 
+            containerPort: 5672
+        volumeMounts:
+            - name: workdir
+              mountPath: "/temporal"
+
+
+      - name: queue-email-send
+        image: "docker.io/rtradetech/temporal:v2.6.3"
+        command: ["temporal", "-config", "", "-db.no_ssl"]  
+        args: ["queue", "email-send"]
+        envFrom: 
+        - configMapRef:
+            name: temporal-config
+        ports: 
+          - name: ipfs
+            protocol: TCP
+            containerPort: 5001
+          - name: "api"
+            protocol: "TCP"
+            containerPort: 9094 
+          - name: db
+            containerPort: 5432
+          - name: rabbitmq 
+            containerPort: 5672
+        volumeMounts:
+            - name: workdir
+              mountPath: "/temporal"
+
+      - name: queue-ipfs-cluster
+        image: "docker.io/rtradetech/temporal:v2.6.3" 
+        command: ["temporal", "-config", "", "-db.no_ssl"]
+        args: ["queue", "ipfs", "cluster"]
+        envFrom: 
+        - configMapRef:
+            name: temporal-config
+        ports: 
+          - name: ipfs
+            protocol: TCP
+            containerPort: 5001
+          - name: "api"
+            protocol: "TCP"
+            containerPort: 9094 
+          - name: db
+            containerPort: 5432
+          - name: rabbitmq 
+            containerPort: 5672
+        volumeMounts:
+            - name: workdir
+              mountPath: "/temporal"
+
+
+      - name: queue-ipfs-ipns-entry
+        image: "docker.io/rtradetech/temporal:v2.6.3" 
+        command: ["temporal", "-config", "", "-db.no_ssl"] 
+        args: ["queue", "ipfs", "ipns-entry"]
+        envFrom: 
+        - configMapRef:
+            name: temporal-config
+        ports: 
+          - name: ipfs
+            protocol: TCP
+            containerPort: 5001
+          - name: "api"
+            protocol: "TCP"
+            containerPort: 9094 
+          - name: db
+            containerPort: 5432
+          - name: rabbitmq 
+            containerPort: 5672
+        volumeMounts:
+            - name: workdir
+              mountPath: "/temporal"
+
+
+
+      - name: queue-ipfs-key-creation
+        image: "docker.io/rtradetech/temporal:v2.6.3"
+        command: ["temporal", "-config", "", "-db.no_ssl"]  
+        args: ["queue", "ipfs", "key-creation"]
+        envFrom: 
+        - configMapRef:
+            name: temporal-config
+        ports: 
+          - name: ipfs
+            protocol: TCP
+            containerPort: 5001
+          - name: "api"
+            protocol: "TCP"
+            containerPort: 9094 
+          - name: db
+            containerPort: 5432
+          - name: rabbitmq 
+            containerPort: 5672
+        volumeMounts:
+            - name: workdir
+              mountPath: "/temporal"
+
+
+      - name: queue-ipfs-pin
+        image: "docker.io/rtradetech/temporal:v2.6.3"
+        command: ["temporal", "-config", "", "-db.no_ssl"]  
+        args: ["queue", "ipfs", "pin"]
+        envFrom: 
+        - configMapRef:
+            name: temporal-config
+        ports: 
+          - name: ipfs
+            protocol: TCP
+            containerPort: 5001
+          - name: "api"
+            protocol: "TCP"
+            containerPort: 9094 
+          - name: db
+            containerPort: 5432
+          - name: rabbitmq 
+            containerPort: 5672
+        volumeMounts:
+            - name: workdir
+              mountPath: "/temporal"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: temporal-api-service
+  labels:
+    app: temporal
+spec:
+  ports:
+  - port: 6767
+    name: api
+  selector:
+    app: temporal
+
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: temporal-ingress
+  namespace: default
+  annotations:
+    kubernetes.io/ingress.class: "nginx"
+    nginx.ingress.kubernetes.io/configuration-snippet: |
+      proxy_set_header l5d-dst-override $service_name.$namespace.svc.cluster.local:$service_port;
+      grpc_set_header l5d-dst-override $service_name.$namespace.svc.cluster.local:$service_port;
+
+spec:
+  rules:
+  - host: example.com
+    http:
+      paths:
+      - backend:
+          serviceName: temporal-api-service
+          servicePort: 6767
