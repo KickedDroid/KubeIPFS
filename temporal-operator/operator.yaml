@@ -8,18 +8,40 @@ maintainers:
     email: <your@email.com>
 url: https://temporal.cloud/
 tasks:
+  - name: temporal
+    kind: Apply 
+    spec:
+      resources:
+        - temporal.yaml
   - name: ipfs-cluster
     kind: Apply
     spec:
       resources:
         - ipfs-cluster.yaml
+  - name: postgres 
+    kind: Apply
+    spec: 
+      resources:
+        - postgres.yaml
+  - name: rabbitmq
+    kind: Apply
+    spec:
+      resources:
+        - rabbitmq.yaml
 plans:
   deploy:
     strategy: serial
     phases:
-      - name: main
+      - name: deploy-main
         strategy: parallel
         steps:
-          - name: everything
+          - name: db
+            tasks:
+              - rabbitmq
+              - postgres
+          - name: ipfs-cluster
             tasks:
               - ipfs-cluster
+          - name: temporal
+            tasks:
+              - temporal
