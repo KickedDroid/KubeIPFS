@@ -13,6 +13,7 @@ tasks:
     spec:
       resources:
         - temporal.yaml
+        - temporal-config.yaml
   - name: ipfs-cluster
     kind: Apply
     spec:
@@ -32,7 +33,7 @@ plans:
   deploy:
     strategy: serial
     phases:
-      - name: deploy-main
+      - name: init
         strategy: parallel
         steps:
           - name: db
@@ -42,6 +43,9 @@ plans:
           - name: ipfs-cluster
             tasks:
               - ipfs-cluster
+      - name: deploy-temporal
+        strategy: serial
+        steps:
           - name: temporal
-            tasks:
+            tasks: 
               - temporal

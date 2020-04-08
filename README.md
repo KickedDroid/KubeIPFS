@@ -64,3 +64,21 @@ Get Cluster Peers
 List pined objects
 
 ``kubectl exec $POD ipfs-cluster-ctl pin ls``
+
+---
+
+# Deploy using an Operator
+
+Make sure to have KUDO installed and a running kubernetes cluster. 
+
+### Install Kudo
+```
+brew tap kudobuilder/tap
+brew install kudo-cli
+```
+
+### Deploy Operator
+Deploying the operator is simple just run the sh script in the root of the repo like so:
+
+`` sh operator.sh``
+
