@@ -57,7 +57,7 @@ roleRef:
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ .Name }}-svc
+  name: rabbitmq-svc
   namespace: {{ .Namespace }}
 spec:
   type: ClusterIP

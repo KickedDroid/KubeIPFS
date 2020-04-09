@@ -40,7 +40,7 @@ data:
   IPFS_CLUSTER_API_CONNECTION_PORT: "9094"
     
   #rabbitmq config
-  RABBITMQ_URL: "amqp://rabbitmq.default:5672/" 
+  RABBITMQ_URL: "amqp://rabbitmq-svc.default:5672/" 
 
   # KRAB CONFIG
   KRAB_URL: "127.0.0.1:10000"
