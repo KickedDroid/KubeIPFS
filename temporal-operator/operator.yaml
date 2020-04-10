@@ -28,7 +28,12 @@ tasks:
     kind: Apply
     spec:
       resources:
-        - rabbitmq.yaml
+        - serviceaccount.yaml
+        - role.yaml
+        - rolebinding.yaml
+        - configmap.yaml
+        - service.yaml
+        - statefulset.yaml
 plans:
   deploy:
     strategy: serial

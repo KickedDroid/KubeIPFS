@@ -17,9 +17,6 @@ echo "
 linkerd install | kubectl apply -f -
 linkerd check
 
-kubectl kudo init
-
-
 kubectl kudo install ./temporal-operator
 
 while true; do
