@@ -14,8 +14,13 @@ echo "
 
 
 "
-linkerd install | kubectl apply -f -
-linkerd check
+#helm init 
+sleep 10
+helm install stable/rabbitmq-ha
+
+
+#linkerd install | kubectl apply -f -
+#linkerd check
 
 kubectl kudo install ./temporal-operator
 
@@ -34,7 +39,7 @@ while true; do
     fi
 done
 
-linkerd inject ./temporal-operator/templates | kubectl apply -f -
+#linkerd inject ./temporal-operator/templates | kubectl apply -f -
 
 kubectl kudo get instances
 

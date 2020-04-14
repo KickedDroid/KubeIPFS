@@ -24,16 +24,6 @@ tasks:
     spec: 
       resources:
         - postgres.yaml
-  - name: rabbitmq
-    kind: Apply
-    spec:
-      resources:
-        - serviceaccount.yaml
-        - role.yaml
-        - rolebinding.yaml
-        - configmap.yaml
-        - service.yaml
-        - statefulset.yaml
 plans:
   deploy:
     strategy: serial
@@ -43,7 +33,6 @@ plans:
         steps:
           - name: db
             tasks:
-              - rabbitmq
               - postgres
           - name: ipfs-cluster
             tasks:
