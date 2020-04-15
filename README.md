@@ -81,10 +81,6 @@ Then install Kudo to your cluster
 kubectl kudo init
 ```
 
-### Deploy Tiller
-```
-helm init
-```
 
 ### Deploy Operator
 Deploying the operator is simple just run the sh script in the root of the repo like so:
