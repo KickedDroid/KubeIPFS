@@ -15,13 +15,11 @@ echo "
 
 "
 #helm init 
-sleep 10
-helm install stable/rabbitmq-ha
-
+#helm install --name rabbitmq stable/rabbitmq-ha
+helm repo add bitnami https://charts.bitnami.com/bitnami && helm install mq bitnami/rabbitmq
 
 #linkerd install | kubectl apply -f -
 #linkerd check
-
 kubectl kudo install ./temporal-operator
 
 while true; do
