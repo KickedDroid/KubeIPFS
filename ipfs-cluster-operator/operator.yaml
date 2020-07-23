@@ -6,7 +6,7 @@ kubernetesVersion: 1.13.0
 maintainers:
   - name: Aidan McComas
     email: <your@email.com>
-url: https://ipfs-cluster.cloud/
+url: https://temporal.cloud/
 tasks:
   - name: ipfs-cluster
     kind: Apply
